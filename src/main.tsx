@@ -7,9 +7,9 @@ import { ThemeProvider } from "./components/providers/theme-provider";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ReactQueryProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
         <App />
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </ReactQueryProvider>
   </React.StrictMode>,
 );
