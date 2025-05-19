@@ -9,9 +9,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel"
-import { useState } from "react"
-import { Playlist } from "../../services/playlist/types"
-import { SongsList } from "../songs-list"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { DisplayPlaylist } from "./display-playlist"
 import { DisplayAllSongs } from "./all-songs"
@@ -22,12 +19,10 @@ export function PlaylistCarousel() {
         queryFn: GetPlaylists
     })
 
-    const [displayPlaylist, setDisplayPlaylist] = useState<Playlist | undefined>(undefined) 
-
     return (
         <div className="flex w-full h-full">
             <Tabs defaultValue="all" className="flex items-center w-full">
-                <TabsList className="flex items-center justify-center w-[95%]">
+                <TabsList className="flex items-center justify-center w-[95%] mb-6">
                     <Carousel   opts={{
                         align: "start",
                         loop: true,
@@ -62,9 +57,6 @@ export function PlaylistCarousel() {
                     </TabsContent>
                 ))}
             </Tabs>
-            {displayPlaylist && (
-                <SongsList setDisplayPlaylist={setDisplayPlaylist} displayPlaylist={displayPlaylist}></SongsList>
-            )}
         </div>
     )
 }

@@ -4,11 +4,16 @@ import "./App.css"
 import { Header } from "./components/header";
 import { useState } from "react";
 import { HeaderState } from "./enums/header";
+import { cn } from "./lib/utils";
+import { useAppSettingsStore } from "./store/app-settings-store";
 
 function App() {
   const [state, setState] = useState<HeaderState>(HeaderState.LISTPLAYLIST)
+
+  const { color } = useAppSettingsStore()
+
   return (
-      <main className="relative h-screen w-screen flex flex-col font-[roboto] font-bold ">
+      <main className={cn("relative h-screen w-screen flex flex-col font-[roboto] font-bold", color)}>
         <header>
           <Header state={state} setHeaderState={setState}></Header>
         </header>

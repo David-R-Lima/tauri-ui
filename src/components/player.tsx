@@ -135,7 +135,7 @@ export function Controls() {
                             step={0.01}
                             value={volume}
                             onChange={(e) => setVolume(parseFloat(e.target.value))}
-                            className="w-24"
+                            className="w-24 accent-primary"
                             aria-label="Volume"
                         />
                     </div>

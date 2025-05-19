@@ -20,7 +20,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
     }
 
     return (
-        <div className="flex justify-between w-full h-[95%]">
+        <div className="flex justify-between w-full h-[90%]">
             <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
                 <div className="h-[50%] w-[80%]">
                     {playlistQuery.data?.img_url ? (

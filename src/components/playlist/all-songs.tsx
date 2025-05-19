@@ -42,7 +42,7 @@ export function DisplayAllSongs() {
     }
 
     return (
-        <div className="flex justify-between w-full h-[95%]">
+        <div className="flex justify-between w-full h-[80%] lg:h-[90%]">
             <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
                 <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>
@@ -65,10 +65,10 @@ export function DisplayAllSongs() {
                     allPlaylist.playlist_songs?.push(playlistSong)
 
                     return (
-                        <div onClick={() => {
+                        <div key={data.id}  onClick={() => {
                           setCurrentPlaylist(allPlaylist)
                         }}>
-                          <SongItem key={data.id} song={data}></SongItem>
+                          <SongItem song={data}></SongItem>
                         </div>
                     )
                     })
