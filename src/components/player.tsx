@@ -1,13 +1,15 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import useControls from "../store/song-control-store"
-import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
+import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 
 const baseUrl = import.meta.env.VITE_API_URL
 
 export function Controls() {
+    const [open, setOpen] = useState(false);
+
     const {
         currentSong,
         isPlaying,
@@ -63,116 +65,189 @@ export function Controls() {
         }
     }, [currentSong])
 
-
-
     return (
-        <div className="flex flex-col w-full">
-            {currentSong && (
-                <div className="flex items-center w-full">
-                    <input
-                        type="range"
-                        min={0}
-                        max={currentSong?.duration || 0}
-                        step={0.1}
-                        value={currentTime}
-                        onChange={(e) => {
-                        const newTime = parseFloat(e.target.value)
-                            if (audioRef.current) {
-                                audioRef.current.currentTime = newTime
-                            }
-                        }}
-                        className="w-full"
-                        aria-label="Progress bar"
-                    />
+        <div className="flex flex-col w-full h-full overflow-hidden">
+            {!open && (
+                <div className="z-5">
+                    {currentSong && (
+                        <div className="flex items-center w-full">
+                            <input
+                                type="range"
+                                min={0}
+                                max={currentSong?.duration || 0}
+                                step={0.1}
+                                value={currentTime}
+                                onChange={(e) => {
+                                const newTime = parseFloat(e.target.value)
+                                    if (audioRef.current) {
+                                        audioRef.current.currentTime = newTime
+                                    }
+                                }}
+                                className="w-full"
+                                aria-label="Progress bar"
+                            />
+                        </div>
+                    )}
+            
+                    <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2">
+                        <div className="flex space-x-4">
+                            <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                                previousSong()
+                            }}>
+                                <ArrowLeftFromLine />
+                            </Button>
+                            <Button
+                                onClick={isPlaying ? pause : play}
+                                variant={'secondary'}
+                                className="px-4 py-2 bg-primary"
+                            >
+                                {isPlaying ? <Pause/> : <Play/>}
+                            </Button>
+                            <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                                nextSong()
+                            }}>
+                                <ArrowRightToLine />
+                            </Button>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <p className="w-16 h-16 object-cover text-primary rounded">                    
+                                {currentSong?.img_url ? (
+                                    <img
+                                        className="w-16 h-16 object-cover text-primary rounded"
+                                        src={currentSong?.img_url}
+                                        alt={currentSong?.title || "Song image"}
+                                    />  
+                                ) : (
+                                    <AudioLines className="w-full h-full"/>
+                                )}
+                            </p>
+    
+                            <div className="text-lg text-primary font-semibold">
+                                {currentSong ? `Now playing: ${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}
+                            </div>
+                        </div>
+    
+                        <div className="flex gap-4">
+                            <div className="flex items-center gap-2">
+                                {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={1}
+                                    step={0.01}
+                                    value={volume}
+                                    onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                    className="w-24 accent-primary"
+                                    aria-label="Volume"
+                                />
+                            </div>
+                            <Button
+                                onClick={() => setRepeat()}
+                                className="text-accent-foreground"
+                                variant={`${repeat ? "default" : "secondary"}`}
+                            >
+                                <Repeat size={20} />
+                            </Button>
+                            <Button
+                                onClick={() => setShuffle()}
+                                className="text-accent-foreground"
+                                variant={`${shuffle ? "default" : "secondary"}`}
+                            >
+                                <Shuffle size={20} />
+                            </Button>
+
+                            {!open && (
+                                <Button onClick={() => {
+                                    setOpen(true)
+                                }}>
+                                    <ChevronUp></ChevronUp>
+                                </Button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
 
-            <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2">
-                <div className="flex space-x-4">
-                    <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
-                        previousSong()
-                    }}>
-                        <ArrowLeftFromLine />
-                    </Button>
-                    <Button
-                        onClick={isPlaying ? pause : play}
-                        variant={'secondary'}
-                        className="px-4 py-2 bg-primary"
-                    >
-                        {isPlaying ? <Pause/> : <Play/>}
-                    </Button>
-                    <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
-                        nextSong()
-                    }}>
-                        <ArrowRightToLine />
-                    </Button>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <p className="w-16 h-16 object-cover text-primary rounded">                    
+            {open && (
+                <div className="absolute top-0 flex flex-col items-center justify-end w-full h-[100%] bg-secondary-foreground space-y-10">
+                    <div className="size-150">
                         {currentSong?.img_url ? (
                             <img
-                                className="w-16 h-16 object-cover text-primary rounded"
+                                className="object-cover text-primary rounded"
                                 src={currentSong?.img_url}
                                 alt={currentSong?.title || "Song image"}
                             />  
                         ) : (
                             <AudioLines className="w-full h-full"/>
                         )}
-                    </p>
-
-                    <div className="text-lg text-primary font-semibold">
-                        {currentSong ? `Now playing: ${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}
+                        <div className="absolute right-4 top-4">
+                            <Button onClick={() => {
+                                setOpen(false)
+                            }}>
+                                <ChevronDown></ChevronDown>
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="flex flex-col justify-center items-center w-full h-[15%] space-y-8">
+                        {currentSong && (
+                            <div className="flex items-center w-full">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={currentSong?.duration || 0}
+                                    step={0.1}
+                                    value={currentTime}
+                                    onChange={(e) => {
+                                    const newTime = parseFloat(e.target.value)
+                                        if (audioRef.current) {
+                                            audioRef.current.currentTime = newTime
+                                        }
+                                    }}
+                                    className="w-full"
+                                    aria-label="Progress bar"
+                                />
+                            </div>
+                        )}
+                        <div className="flex space-x-4">
+                                <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                                    previousSong()
+                                }}>
+                                    <ArrowLeftFromLine />
+                                </Button>
+                                <Button
+                                    onClick={isPlaying ? pause : play}
+                                    variant={'secondary'}
+                                    className="px-4 py-2 bg-primary"
+                                >
+                                    {isPlaying ? <Pause/> : <Play/>}
+                                </Button>
+                                <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
+                                    nextSong()
+                                }}>
+                                    <ArrowRightToLine />
+                                </Button>
+                        </div>
                     </div>
                 </div>
+            )} 
 
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2">
-                        {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
-                        <input
-                            type="range"
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            value={volume}
-                            onChange={(e) => setVolume(parseFloat(e.target.value))}
-                            className="w-24 accent-primary"
-                            aria-label="Volume"
-                        />
-                    </div>
-                    <Button
-                        onClick={() => setRepeat()}
-                        className="text-accent-foreground"
-                        variant={`${repeat ? "default" : "secondary"}`}
-                    >
-                        <Repeat size={20} />
-                    </Button>
-                    <Button
-                        onClick={() => setShuffle()}
-                        className="text-accent-foreground"
-                        variant={`${shuffle ? "default" : "secondary"}`}
-                    >
-                        <Shuffle size={20} />
-                    </Button>
-                </div>
-
-                {currentSong?.local_url && (
-                    <audio
-                    key={currentSong.id}
-                    ref={audioRef}
-                    src={baseUrl + currentSong.local_url}
-                    preload="auto"
-                    onEnded={() => {
-                        if (repeat && currentSong) {
-                        audioRef.current!.currentTime = 0
-                        audioRef.current!.play().catch(() => {})
-                        setCurrentTime(0)
-                        } else {
-                        handleEndSong()
-                        }
-                    }}
-                    />
-                )}
-            </div>
+            {currentSong?.local_url && (
+                <audio
+                key={currentSong.id}
+                ref={audioRef}
+                src={baseUrl + currentSong.local_url}
+                preload="auto"
+                onEnded={() => {
+                    if (repeat && currentSong) {
+                    audioRef.current!.currentTime = 0
+                    audioRef.current!.play().catch(() => {})
+                    setCurrentTime(0)
+                    } else {
+                    handleEndSong()
+                    }
+                }}
+                />
+            )}
         </div>
     )
 }
