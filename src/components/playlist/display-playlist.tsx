@@ -20,7 +20,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
     }
 
     return (
-        <div className="flex justify-between w-full h-[90%]">
+        <div className="flex justify-between w-full h-[80%] lg:h-[90%]">
             <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
                 <div className="h-[50%] w-[80%]">
                     {playlistQuery.data?.img_url ? (
@@ -35,7 +35,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     <p className="font-extrabold italic">Songs: {playlistQuery.data?.playlist_songs?.length}</p>
                 </div>
             </div>
-            <div className="w-[80%] bg-secondary rounded-r-xl p-4">
+            <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
             {playlistQuery.data && playlistQuery.data.playlist_songs && playlistQuery.data.playlist_songs.length > 0 ? (
                     playlistQuery.data.playlist_songs.map((data) => {
                     if (!data || !data.song) return null

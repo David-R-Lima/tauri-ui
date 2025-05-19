@@ -12,12 +12,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { DisplayPlaylist } from "./display-playlist"
 import { DisplayAllSongs } from "./all-songs"
+import { usePlaylists } from "@/hooks/usePlaylists"
 
 export function PlaylistCarousel() {
-    const playlistQuery = useQuery({
-        queryKey: ['playlist'],
-        queryFn: GetPlaylists
-    })
+    const playlistQuery = usePlaylists()
 
     return (
         <div className="flex w-full h-full">
@@ -50,9 +48,9 @@ export function PlaylistCarousel() {
                 <TabsContent value="all" className="w-full h-full">
                     <DisplayAllSongs></DisplayAllSongs>
                 </TabsContent>
-                <TabsContent value="liked" className="w-full"></TabsContent>
+                <TabsContent value="liked" className="w-full h-full"></TabsContent>
                 {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
-                    <TabsContent key={playlist.id} value={playlist.id} className="w-full">
+                    <TabsContent key={playlist.id} value={playlist.id} className="w-full h-full">
                         <DisplayPlaylist playlistId={playlist.id}></DisplayPlaylist>
                     </TabsContent>
                 ))}

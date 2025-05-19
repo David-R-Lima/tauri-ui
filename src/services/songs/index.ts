@@ -24,3 +24,17 @@ export async function AddSong(url: string) {
         url
     })
 }
+
+interface AddSongToPlaylistProps {
+    songId: string;
+    playlistId: string;
+}
+
+export async function AddSongToPlaylist({ songId, playlistId}: AddSongToPlaylistProps) {
+    const data = await api.post(`/playlist/add`, {
+        songId: songId,
+        playlistId: playlistId,
+    })
+
+    return data
+}

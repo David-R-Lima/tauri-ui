@@ -1,10 +1,17 @@
 import { Song } from "@/services/songs/types";
 import UseControls from "@/store/song-control-store";
-import { CheckIcon, Download, EllipsisVertical } from "lucide-react";
+import { CheckIcon, ChevronRight, Download, EllipsisVertical } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-
-
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+  } from "@/components/ui/hover-card"
+import { usePlaylists } from "@/hooks/usePlaylists";
+import { AddSongToPlaylist } from "@/services/songs";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 interface Props {
     song: Song
 }
@@ -13,6 +20,18 @@ export function SongItem({ song }: Props) {
 
     const {setCurrentSong} = UseControls()
 
+    const playlists = usePlaylists()
+
+    const addSongtoPlaylistMutation = useMutation({
+        mutationFn: AddSongToPlaylist,
+        onSuccess: () => {
+            toast.success("Song Added to playlist")
+            playlists.refetch()
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
     return (
         <div className="flex h-[70px] items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" >
             <Popover>
@@ -20,7 +39,24 @@ export function SongItem({ song }: Props) {
                     <EllipsisVertical />
                 </PopoverTrigger>
                 <PopoverContent className="flex flex-col w-[200px] space-y-4">
-                    <Button>Add To Playlist</Button>
+                    <HoverCard openDelay={0}>
+                        <Button asChild>
+                            <HoverCardTrigger>
+                                <p>Add To Playlist</p> <ChevronRight />
+                            </HoverCardTrigger>
+                        </Button>
+                        <HoverCardContent side="right" align="center" sideOffset={15} className="flex flex-col w-[150px] space-y-4 max-h-[250px] overflow-y-scroll">
+                            {playlists.data && playlists.data.playlists.map((playlist) => (
+                                <Button onClick={() => {
+                                    addSongtoPlaylistMutation.mutate({
+                                        songId: song.id,
+                                        playlistId: playlist.id,
+                                    })
+                                }}>{playlist.name ?? "no name"}</Button>
+                            ))}
+                        </HoverCardContent>
+                    </HoverCard>
+
                     <Button>Like</Button>
                     <Button variant={'destructive'}>Delete</Button>
                 </PopoverContent>
