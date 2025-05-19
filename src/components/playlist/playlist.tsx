@@ -33,15 +33,18 @@ export function PlaylistCarousel() {
                         loop: true,
                     }} className="w-full">
                         <CarouselContent className="w-full">
-                            <CarouselItem className="md:basis-1/4 lg:basis-1/5">
-                                <TabsTrigger value="all" className="font-extrabold">All songs</TabsTrigger>
+                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                                <TabsTrigger value="all" className="font-extrabold hover:cursor-pointer" >All songs</TabsTrigger>
                             </CarouselItem>
-                            <CarouselItem className="md:basis-1/4 lg:basis-1/5">
-                                <TabsTrigger value="liked" className="font-extrabold">Liked</TabsTrigger>
+                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                                <TabsTrigger value="liked" className="font-extrabold hover:cursor-pointer">Liked</TabsTrigger>
+                            </CarouselItem>
+                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                                <TabsTrigger value="history" className="font-extrabold hover:cursor-pointer">Previous songs</TabsTrigger>
                             </CarouselItem>
                             {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
-                                <CarouselItem key={playlist.id} className="md:basis-1/4 lg:basis-1/5">
-                                        <TabsTrigger value={playlist.id} className="font-extrabold">{playlist.name ?? "no name"}</TabsTrigger>
+                                <CarouselItem key={playlist.id} className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                                        <TabsTrigger value={playlist.id} className="font-extrabold hover:cursor-pointer">{playlist.name ?? "no name"}</TabsTrigger>
                                 </CarouselItem>
                             ))}
                         </CarouselContent>

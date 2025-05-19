@@ -20,9 +20,9 @@ export function DisplayPlaylist({ playlistId }: Props) {
     }
 
     return (
-        <div className="flex w-full h-full">
-            <div className="w-[25%] h-full p-6">
-                <div className="m-8 h-[70%]">
+        <div className="flex justify-between w-full h-[95%]">
+            <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
+                <div className="h-[50%] w-[80%]">
                     {playlistQuery.data?.img_url ? (
                         <img src={playlistQuery.data?.img_url ?? ""}></img>
                     ) : (
@@ -30,12 +30,12 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     )}
                 </div>
                 <div>
-                    <p>Playlist: {playlistQuery.data?.name}</p>
-                    <p>Description: {playlistQuery.data?.description}</p>
-                    <p>Songs: {playlistQuery.data?.playlist_songs?.length}</p>
+                    <p className="font-extrabold italic">Playlist: {playlistQuery.data?.name}</p>
+                    <p className="font-extrabold italic">Description: {playlistQuery.data?.description}</p>
+                    <p className="font-extrabold italic">Songs: {playlistQuery.data?.playlist_songs?.length}</p>
                 </div>
             </div>
-            <div className="w-[75%] bg-secondary rounded-xl p-4">
+            <div className="w-[80%] bg-secondary rounded-r-xl p-4">
             {playlistQuery.data && playlistQuery.data.playlist_songs && playlistQuery.data.playlist_songs.length > 0 ? (
                     playlistQuery.data.playlist_songs.map((data) => {
                     if (!data || !data.song) return null

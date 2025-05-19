@@ -11,6 +11,7 @@ function App() {
       <main className="relative h-screen w-screen flex flex-col font-[roboto] font-bold ">
         <header>
           <Header state={state} setHeaderState={setState}></Header>
+
         </header>
         <section className='flex flex-col flex-1 w-full h-[60vh] xl:h-[90vh] max-h-[90vh] overflow-hidden p-10' >
           {state === HeaderState.HOME && (

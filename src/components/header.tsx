@@ -1,7 +1,8 @@
 import { HeaderState } from "@/enums/header";
-import { Home, ListEnd, ListMusic, ListPlus, Search, Settings } from "lucide-react";
+import { Home, ListEnd, ListMusic, ListPlus, Search } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { AddPlaylistDialog } from "./add-playlist-dialog";
+import { Settings } from "./setting";
 
 interface HeaderProps {
     state: HeaderState
@@ -16,7 +17,7 @@ export function Header({setHeaderState, state}: HeaderProps) {
                 <ListEnd className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTPLAYLIST)}/>
                 <AddPlaylistDialog></AddPlaylistDialog>
                 <Search className="text-primary mt-1 hover:cursor-pointer"/>
-                <Settings className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.SETTINGS)}/>
+                {/* <Settings></Settings> */}
             </div>
         </div>
     )

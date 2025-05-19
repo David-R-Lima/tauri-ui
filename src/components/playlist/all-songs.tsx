@@ -1,19 +1,16 @@
 import { GetSongs } from "@/services/songs"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { AudioLines } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { SongItem } from "../song-item"
 
 export function DisplayAllSongs() {
-
-    const [page, setPage] = useState(1)
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
     const infiniteQuery = useInfiniteQuery({
         queryKey: [
-          'all-songs',
-          page
+          'all-songs'
         ],
         queryFn: ({ pageParam }) => {
           return GetSongs({
@@ -21,11 +18,6 @@ export function DisplayAllSongs() {
           })
         },
         getNextPageParam: ({ meta }) => {
-        //   if (meta.page < meta.page) {
-        //     return meta.pageIndex + 1
-        //   }
-        //   return undefined
-            // setPage(meta.page + 1)
             return Number(meta.page + 1)
         },
     
@@ -33,7 +25,6 @@ export function DisplayAllSongs() {
         select: (data) => {
             const songs = data.pages.flatMap((page) => page.songs)
             const meta = data.pages[data.pages.length - 1].meta;
-            console.log(meta)
 
             return { songs, meta }
         },
@@ -65,17 +56,17 @@ export function DisplayAllSongs() {
     }
 
     return (
-        <div className="flex w-full h-full">
-            <div className="w-[25%] h-full p-6">
-                <div className="m-8 h-[70%]">
+        <div className="flex justify-between w-full h-[95%]">
+            <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
+                <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>
                 </div>
                 <div>
-                    <p>Playlist: All songs</p>
-                    <p>Songs: {infiniteQuery.data?.meta.totalItems}</p>
+                    <p className="font-extrabold italic">Playlist: All songs</p>
+                    <p className="font-extrabold italic">Songs: {infiniteQuery.data?.meta.totalItems}</p>
                 </div>
             </div>
-            <div ref={observerRef} className="w-[75%] bg-secondary rounded-xl p-4 h-[95%] overflow-y-scroll overflow-x-hidden">
+            <div ref={observerRef} className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
             {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
                     infiniteQuery.data.songs.map((data) => {
 
