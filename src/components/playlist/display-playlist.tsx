@@ -2,6 +2,7 @@ import { GetPlaylist } from "@/services/playlist"
 import UseControls from "@/store/song-control-store"
 import { useQuery } from "@tanstack/react-query"
 import { CheckIcon, Disc3, Download } from "lucide-react"
+import { SongItem } from "../song-item"
 
 interface Props {
     playlistId: string
@@ -41,30 +42,11 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     if (!data || !data.song) return null
 
                     return (
-                        <li key={data.song_id} className="flex items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" onClick={() => {
-                            if(data.song) {
-                                setCurrentPlaylist(playlistQuery.data)
-                                setCurrentSong(data.song)
-                            }
+                        <div key={data.song_id}  onClick={() => {
+                            setCurrentPlaylist(playlistQuery.data)
                         }}>
-                            {data.song.img_url && (
-                                <img className="size-10" src={data.song.img_url} alt="" />
-                            )}
-                            <p>{data.song.title ?? 'Untitled'}</p>
-                            {
-                                data.song.duration && (
-                                    <p>
-                                        {Math.floor(data.song.duration / 60)}:
-                                        {(data.song.duration % 60).toString().padStart(2, '0')}
-                                    </p>
-                                )
-                            }
-                            {data.song.local_url ? (
-                                <CheckIcon className="text-primary"></CheckIcon>
-                            ) : (
-                                <Download className="text-primary"></Download>
-                            )}
-                        </li>
+                            <SongItem song={data.song}></SongItem>
+                        </div>
                     )
                     })
                 ) : (
