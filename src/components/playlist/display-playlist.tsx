@@ -1,7 +1,7 @@
 import { GetPlaylist } from "@/services/playlist"
 import UseControls from "@/store/song-control-store"
 import { useQuery } from "@tanstack/react-query"
-import { CheckIcon, Disc3, Download } from "lucide-react"
+import { Disc3 } from "lucide-react"
 import { SongItem } from "../song-item"
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 export function DisplayPlaylist({ playlistId }: Props) {
 
-    const {setCurrentSong, setCurrentPlaylist} = UseControls()
+    const {setCurrentPlaylist} = UseControls()
 
     const playlistQuery = useQuery({
         queryKey: ['playlist', playlistId],

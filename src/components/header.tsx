@@ -1,5 +1,5 @@
 import { HeaderState } from "@/enums/header";
-import { Home, ListEnd, Search } from "lucide-react";
+import { Home, ListEnd } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { AddPlaylistDialog } from "./add-playlist-dialog";
 import { SettingsDialog } from "./setting";
@@ -10,7 +10,7 @@ interface HeaderProps {
     setHeaderState: Dispatch<SetStateAction<HeaderState>>
 }
 
-export function Header({setHeaderState, state}: HeaderProps) {
+export function Header({setHeaderState}: HeaderProps) {
     return (
         <div className="w-full h-[50px] flex items-start justify-center">
             <div className=" flex items-center justify-between w-[30%] h-full bg-secondary-foreground rounded-b-full px-8 py-2">

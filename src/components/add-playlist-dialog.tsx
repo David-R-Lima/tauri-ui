@@ -10,10 +10,8 @@ import { CreatePlaylist } from "@/services/playlist";
 
 export function AddPlaylistDialog() {
     const {
-        register,
         setValue,
         handleSubmit,
-        formState: { errors },
     } = useForm<CreatePlaylistType>({
         resolver: zodResolver(CreatePlaylistSchema),
     })
