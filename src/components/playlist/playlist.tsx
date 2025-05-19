@@ -11,9 +11,10 @@ import {
 } from "../ui/carousel"
 import { useState } from "react"
 import { Playlist } from "../../services/playlist/types"
-import { Disc3 } from "lucide-react"
 import { SongsList } from "../songs-list"
-import { Card, CardContent } from "../ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { DisplayPlaylist } from "./display-playlist"
+import { DisplayAllSongs } from "./all-songs"
 
 export function PlaylistCarousel() {
     const playlistQuery = useQuery({
@@ -24,40 +25,40 @@ export function PlaylistCarousel() {
     const [displayPlaylist, setDisplayPlaylist] = useState<Playlist | undefined>(undefined) 
 
     return (
-        <div className="w-full max-w-[85%]">
-            {!displayPlaylist && (
-                <Carousel
-                    opts={{
+        <div className="flex w-full h-full">
+            <Tabs defaultValue="all" className="flex items-center w-full">
+                <TabsList className="flex items-center justify-center w-[95%]">
+                    <Carousel   opts={{
                         align: "start",
-                    }}
-                    className="w-full h-full p-8"
-                >
-                    <CarouselContent>
-                        {playlistQuery.data && playlistQuery.data.map((data) => (
-                            <CarouselItem key={data.id} className="basis-1/2 lg:basis-1/3 hover:cursor-pointer" onClick={() => setDisplayPlaylist(data)}>
-                                <div className="p-20">
-                                    <Card>
-                                        <CardContent className="flex aspect-square items-center justify-center p-8">
-                                        <div className="flex aspect-square items-center justify-center w-full">
-                                                {data.img_url ? (
-                                                    <img src={data.img_url} alt="" />
-                                                ) : (
-                                                    <Disc3 className="size-full text-primary"/>
-                                                )} 
-                                            </div>   
-                                            <div className="absolute bottom-0 left-4 w-full p-4">
-                                                <p className="font-extrabold">Songs: {data.playlist_songs?.length}</p>
-                                            </div>   
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                        loop: true,
+                    }} className="w-full">
+                        <CarouselContent className="w-full">
+                            <CarouselItem className="md:basis-1/4 lg:basis-1/5">
+                                <TabsTrigger value="all" className="font-extrabold">All songs</TabsTrigger>
                             </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </Carousel>
-            )}
+                            <CarouselItem className="md:basis-1/4 lg:basis-1/5">
+                                <TabsTrigger value="liked" className="font-extrabold">Liked</TabsTrigger>
+                            </CarouselItem>
+                            {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
+                                <CarouselItem className="md:basis-1/4 lg:basis-1/5">
+                                        <TabsTrigger key={playlist.id} value={playlist.id} className="font-extrabold">{playlist.name ?? "no name"}</TabsTrigger>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </Carousel>
+                </TabsList>
+                <TabsContent value="all" className="w-full">
+                    <DisplayAllSongs></DisplayAllSongs>
+                </TabsContent>
+                <TabsContent value="liked" className="w-full"></TabsContent>
+                {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
+                    <TabsContent value={playlist.id} className="w-full">
+                        <DisplayPlaylist playlistId={playlist.id}></DisplayPlaylist>
+                    </TabsContent>
+                ))}
+            </Tabs>
             {displayPlaylist && (
                 <SongsList setDisplayPlaylist={setDisplayPlaylist} displayPlaylist={displayPlaylist}></SongsList>
             )}

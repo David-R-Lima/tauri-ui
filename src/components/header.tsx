@@ -15,7 +15,6 @@ export function Header({setHeaderState, state}: HeaderProps) {
                 <Home className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.HOME)}></Home>
                 <ListEnd className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTPLAYLIST)}/>
                 <AddPlaylistDialog></AddPlaylistDialog>
-                <ListMusic className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTSONGS)}/>
                 <Search className="text-primary mt-1 hover:cursor-pointer"/>
                 <Settings className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.SETTINGS)}/>
             </div>

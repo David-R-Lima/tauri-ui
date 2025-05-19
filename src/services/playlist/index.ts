@@ -1,11 +1,15 @@
 import { QueryFunctionContext } from '@tanstack/react-query'
 import { api } from '../api'
 import { CreatePlaylistType, Playlist } from './types'
+import { IPaginationResponse } from '../pagination'
 
 export async function GetPlaylists(ctx: QueryFunctionContext) {
   const [, page] = ctx.queryKey
 
-  const { data } = await api.get<Playlist[]>('/playlist', {
+  const { data } = await api.get<{
+    playlists: Playlist[],
+    meta: IPaginationResponse
+  }>('/playlist', {
     params: {
       page,
     },
