@@ -13,7 +13,7 @@ export function SongsList({setDisplayPlaylist, displayPlaylist}: Props) {
     const {setCurrentSong, setCurrentPlaylist} = UseControls()
 
     return (
-        <div className="flex flex-col items-start justify-start w-[90vw] h-[65vh] bg-primary-foreground p-4 mt-10">
+        <div className="flex flex-col items-start justify-start w-full h-[65vh] bg-primary-foreground p-4 mt-10">
             <div>
                 <Button onClick={() => {
                     setDisplayPlaylist(undefined)

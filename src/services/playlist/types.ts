@@ -1,5 +1,5 @@
 import { PlaylistSong } from '../playlist-songs/types'
-
+import { z } from 'zod'
 export interface Playlist {
   id: string
   name?: string
@@ -9,3 +9,10 @@ export interface Playlist {
   created_at?: Date
   updated_at?: Date
 }
+
+export const CreatePlaylistSchema = z.object({
+  name: z.string(),
+  description: z.string().optional()
+})
+
+export type CreatePlaylistType = z.infer<typeof CreatePlaylistSchema>

@@ -1,8 +1,8 @@
 import { QueryFunctionContext } from '@tanstack/react-query'
 import { api } from '../api'
-import { Playlist } from './types'
+import { CreatePlaylistType, Playlist } from './types'
 
-export async function GetPlaylist(ctx: QueryFunctionContext) {
+export async function GetPlaylists(ctx: QueryFunctionContext) {
   const [, page] = ctx.queryKey
 
   const { data } = await api.get<Playlist[]>('/playlist', {
@@ -12,4 +12,20 @@ export async function GetPlaylist(ctx: QueryFunctionContext) {
   })
 
   return data
+}
+
+export async function GetPlaylist(ctx: QueryFunctionContext) {
+  const [, id] = ctx.queryKey
+
+  const { data } = await api.get<Playlist>('/playlist/' + id)
+
+  return data
+}
+
+
+
+export async function CreatePlaylist(formData: CreatePlaylistType) {
+  await api.post('/playlist', {
+    ...formData
+  })
 }
