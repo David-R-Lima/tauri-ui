@@ -1,0 +1,11 @@
+responsive ui
+
+proper routing
+
+create playlist
+
+all song list
+
+search dialog
+
+etc...
