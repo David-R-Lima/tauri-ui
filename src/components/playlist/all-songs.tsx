@@ -1,19 +1,66 @@
 import { GetSongs } from "@/services/songs"
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery } from "@tanstack/react-query"
 import { AudioLines } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SongItem } from "../song-item"
 
 export function DisplayAllSongs() {
 
     const [page, setPage] = useState(1)
 
-    const songsQuery = useQuery({
-        queryKey: ['all-songs', page],
-        queryFn: GetSongs
-    })
+    const observerRef = useRef<HTMLDivElement | null>(null)
 
-    if(songsQuery.isPending) {
+    const infiniteQuery = useInfiniteQuery({
+        queryKey: [
+          'all-songs',
+          page
+        ],
+        queryFn: ({ pageParam }) => {
+          return GetSongs({
+            page: Number(pageParam),
+          })
+        },
+        getNextPageParam: ({ meta }) => {
+        //   if (meta.page < meta.page) {
+        //     return meta.pageIndex + 1
+        //   }
+        //   return undefined
+            // setPage(meta.page + 1)
+            return Number(meta.page + 1)
+        },
+    
+        initialPageParam: 1,
+        select: (data) => {
+            const songs = data.pages.flatMap((page) => page.songs)
+            const meta = data.pages[data.pages.length - 1].meta;
+            console.log(meta)
+
+            return { songs, meta }
+        },
+    })
+    
+      useEffect(() => {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              infiniteQuery.fetchNextPage() // Trigger fetching the next page
+            }
+          },
+          { threshold: 1.0 },
+        )
+    
+        if (observerRef.current) {
+          observer.observe(observerRef.current)
+        }
+    
+        return () => {
+          if (observerRef.current) {
+            observer.unobserve(observerRef.current)
+          }
+        }
+      }, [infiniteQuery.hasNextPage, infiniteQuery.fetchNextPage])
+
+    if(infiniteQuery.isPending) {
         return <p>Loading...</p>
     }
 
@@ -25,15 +72,15 @@ export function DisplayAllSongs() {
                 </div>
                 <div>
                     <p>Playlist: All songs</p>
-                    <p>Songs: {songsQuery.data?.meta.totalItems}</p>
+                    <p>Songs: {infiniteQuery.data?.meta.totalItems}</p>
                 </div>
             </div>
-            <div className="w-[75%] bg-secondary rounded-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-            {songsQuery.data && songsQuery.data.songs.length && songsQuery.data.songs.length > 0 ? (
-                    songsQuery.data.songs.map((data) => {
+            <div ref={observerRef} className="w-[75%] bg-secondary rounded-xl p-4 h-[95%] overflow-y-scroll overflow-x-hidden">
+            {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
+                    infiniteQuery.data.songs.map((data) => {
 
                     return (
-                        <SongItem song={data}></SongItem>
+                        <SongItem key={data.id} song={data}></SongItem>
                     )
                     })
                 ) : (

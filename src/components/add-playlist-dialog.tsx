@@ -33,9 +33,7 @@ export function AddPlaylistDialog() {
             ...data
         })
     }
-
-    console.log(errors)
-
+    
     return (
         <Dialog>
             <DialogTrigger asChild>

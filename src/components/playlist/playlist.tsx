@@ -40,8 +40,8 @@ export function PlaylistCarousel() {
                                 <TabsTrigger value="liked" className="font-extrabold">Liked</TabsTrigger>
                             </CarouselItem>
                             {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
-                                <CarouselItem className="md:basis-1/4 lg:basis-1/5">
-                                        <TabsTrigger key={playlist.id} value={playlist.id} className="font-extrabold">{playlist.name ?? "no name"}</TabsTrigger>
+                                <CarouselItem key={playlist.id} className="md:basis-1/4 lg:basis-1/5">
+                                        <TabsTrigger value={playlist.id} className="font-extrabold">{playlist.name ?? "no name"}</TabsTrigger>
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
@@ -49,12 +49,12 @@ export function PlaylistCarousel() {
                         <CarouselNext />
                     </Carousel>
                 </TabsList>
-                <TabsContent value="all" className="w-full">
+                <TabsContent value="all" className="w-full h-full">
                     <DisplayAllSongs></DisplayAllSongs>
                 </TabsContent>
                 <TabsContent value="liked" className="w-full"></TabsContent>
                 {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
-                    <TabsContent value={playlist.id} className="w-full">
+                    <TabsContent key={playlist.id} value={playlist.id} className="w-full">
                         <DisplayPlaylist playlistId={playlist.id}></DisplayPlaylist>
                     </TabsContent>
                 ))}

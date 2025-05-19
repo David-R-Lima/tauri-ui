@@ -9,10 +9,10 @@ interface Props {
 
 export function SongItem({ song }: Props) {
 
-    const {setCurrentSong, setCurrentPlaylist} = UseControls()
+    const {setCurrentSong} = UseControls()
 
     return (
-        <div className="flex h-[10%] items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" onClick={() => {
+        <div className="flex h-[70px] items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" onClick={() => {
             setCurrentSong(song)
         }}>
             {song.img_url && (
