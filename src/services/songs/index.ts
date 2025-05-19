@@ -7,7 +7,6 @@ interface getSongsProps {
 }
 
 export async function GetSongs({ page }: getSongsProps) {
-    console.log(page)
     const { data } = await api.get<{
         songs: Song[],
         meta: IPaginationResponse
@@ -18,4 +17,10 @@ export async function GetSongs({ page }: getSongsProps) {
     })
 
     return data
+}
+
+export async function AddSong(url: string) {
+    await api.post("/song/download", {
+        url
+    })
 }

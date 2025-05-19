@@ -29,7 +29,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                         <Disc3 className="w-full h-full" />
                     )}
                 </div>
-                <div>
+                <div className="text-xl">
                     <p className="font-extrabold italic">Playlist: {playlistQuery.data?.name}</p>
                     <p className="font-extrabold italic">Description: {playlistQuery.data?.description}</p>
                     <p className="font-extrabold italic">Songs: {playlistQuery.data?.playlist_songs?.length}</p>

@@ -1,55 +1,41 @@
-import { GetSongs } from "@/services/songs"
-import { useInfiniteQuery } from "@tanstack/react-query"
 import { AudioLines } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { SongItem } from "../song-item"
+import UseControls from "@/store/song-control-store"
+import { Playlist } from "@/services/playlist/types"
+import { PlaylistSong } from "@/services/playlist-songs/types"
+import { UseAllSongs } from "@/hooks/useAllSongs"
+
+const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
 export function DisplayAllSongs() {
 
+    const { setCurrentPlaylist } = UseControls()
+
     const observerRef = useRef<HTMLDivElement | null>(null)
 
-    const infiniteQuery = useInfiniteQuery({
-        queryKey: [
-          'all-songs'
-        ],
-        queryFn: ({ pageParam }) => {
-          return GetSongs({
-            page: Number(pageParam),
-          })
-        },
-        getNextPageParam: ({ meta }) => {
-            return Number(meta.page + 1)
-        },
+    const infiniteQuery = UseAllSongs()
     
-        initialPageParam: 1,
-        select: (data) => {
-            const songs = data.pages.flatMap((page) => page.songs)
-            const meta = data.pages[data.pages.length - 1].meta;
-
-            return { songs, meta }
-        },
-    })
-    
-      useEffect(() => {
-        const observer = new IntersectionObserver(
-          ([entry]) => {
-            if (entry.isIntersecting) {
-              infiniteQuery.fetchNextPage() // Trigger fetching the next page
-            }
-          },
-          { threshold: 1.0 },
-        )
-    
-        if (observerRef.current) {
-          observer.observe(observerRef.current)
-        }
-    
-        return () => {
-          if (observerRef.current) {
-            observer.unobserve(observerRef.current)
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            infiniteQuery.fetchNextPage() // Trigger fetching the next page
           }
+        },
+        { threshold: 0 },
+      )
+  
+      if (observerRef.current) {
+        observer.observe(observerRef.current)
+      }
+  
+      return () => {
+        if (observerRef.current) {
+          observer.unobserve(observerRef.current)
         }
-      }, [infiniteQuery.hasNextPage, infiniteQuery.fetchNextPage])
+      }
+    }, [infiniteQuery.hasNextPage, infiniteQuery.fetchNextPage])
 
     if(infiniteQuery.isPending) {
         return <p>Loading...</p>
@@ -61,22 +47,36 @@ export function DisplayAllSongs() {
                 <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>
                 </div>
-                <div>
+                <div className="text-xl">
                     <p className="font-extrabold italic">Playlist: All songs</p>
                     <p className="font-extrabold italic">Songs: {infiniteQuery.data?.meta.totalItems}</p>
                 </div>
             </div>
-            <div ref={observerRef} className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-            {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
+            <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
+                {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
                     infiniteQuery.data.songs.map((data) => {
 
+                    const playlistSong: PlaylistSong = {
+                      playlist_id: "all",
+                      song_id: data.id,
+                      song: data
+                    }
+
+                    allPlaylist.playlist_songs?.push(playlistSong)
+
                     return (
-                        <SongItem key={data.id} song={data}></SongItem>
+                        <div onClick={() => {
+                          setCurrentPlaylist(allPlaylist)
+                        }}>
+                          <SongItem key={data.id} song={data}></SongItem>
+                        </div>
                     )
                     })
                 ) : (
                     <li className="text-gray-500">No songs found in this playlist.</li>
                 )}
+
+                <div ref={observerRef}></div>
             </div>
         </div>
     )

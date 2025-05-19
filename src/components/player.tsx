@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import useControls from "../store/song-control-store"
-import { ArrowLeftFromLine, ArrowRightToLine, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
+import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 
 const baseUrl = import.meta.env.VITE_API_URL
@@ -89,31 +89,39 @@ export function Controls() {
 
             <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2">
                 <div className="flex space-x-4">
-                    <Button variant={"secondary"} onClick={() => {
+                    <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
                         previousSong()
                     }}>
                         <ArrowLeftFromLine />
                     </Button>
                     <Button
                         onClick={isPlaying ? pause : play}
-                        className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600"
+                        variant={'secondary'}
+                        className="px-4 py-2 bg-primary"
                     >
                         {isPlaying ? <Pause/> : <Play/>}
                     </Button>
-                    <Button variant={"secondary"} onClick={() => {
+                    <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
                         nextSong()
                     }}>
                         <ArrowRightToLine />
                     </Button>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <img
-                        className="w-16 h-16 object-cover rounded"
-                        src={currentSong?.img_url}
-                        alt={currentSong?.title || "Song image"}
-                    />
-                    <div className="text-lg font-semibold">
-                        {currentSong ? `Now playing: ${currentSong.title}` : 'No song selected'}
+                    <p className="w-16 h-16 object-cover text-primary rounded">                    
+                        {currentSong?.img_url ? (
+                            <img
+                                className="w-16 h-16 object-cover text-primary rounded"
+                                src={currentSong?.img_url}
+                                alt={currentSong?.title || "Song image"}
+                            />  
+                        ) : (
+                            <AudioLines className="w-full h-full"/>
+                        )}
+                    </p>
+
+                    <div className="text-lg text-primary font-semibold">
+                        {currentSong ? `Now playing: ${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}
                     </div>
                 </div>
 
@@ -133,14 +141,14 @@ export function Controls() {
                     </div>
                     <Button
                         onClick={() => setRepeat()}
-                        className=""
+                        className="text-accent-foreground"
                         variant={`${repeat ? "default" : "secondary"}`}
                     >
                         <Repeat size={20} />
                     </Button>
                     <Button
                         onClick={() => setShuffle()}
-                        className=""
+                        className="text-accent-foreground"
                         variant={`${shuffle ? "default" : "secondary"}`}
                     >
                         <Shuffle size={20} />

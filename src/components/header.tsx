@@ -2,7 +2,8 @@ import { HeaderState } from "@/enums/header";
 import { Home, ListEnd, Search } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { AddPlaylistDialog } from "./add-playlist-dialog";
-import { Settings } from "./setting";
+import { SettingsDialog } from "./setting";
+import { SearchComboBox } from "./search";
 
 interface HeaderProps {
     state: HeaderState
@@ -11,13 +12,13 @@ interface HeaderProps {
 
 export function Header({setHeaderState, state}: HeaderProps) {
     return (
-        <div className="w-full h-[40px] flex items-start justify-center">
-            <div className=" flex justify-between w-[30%] h-full bg-secondary-foreground rounded-b-full px-8">
-                <Home className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.HOME)}></Home>
-                <ListEnd className="text-primary mt-1 hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTPLAYLIST)}/>
+        <div className="w-full h-[50px] flex items-start justify-center">
+            <div className=" flex items-center justify-between w-[30%] h-full bg-secondary-foreground rounded-b-full px-8 py-2">
+                <Home className="text-primary hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.HOME)}></Home>
+                <ListEnd className="text-primary hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTPLAYLIST)}/>
                 <AddPlaylistDialog></AddPlaylistDialog>
-                <Search className="text-primary mt-1 hover:cursor-pointer"/>
-                <Settings></Settings>
+                <SearchComboBox></SearchComboBox>
+                <SettingsDialog></SettingsDialog>
             </div>
         </div>
     )

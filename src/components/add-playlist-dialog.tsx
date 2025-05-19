@@ -37,7 +37,7 @@ export function AddPlaylistDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <ListPlus className="text-primary mt-1 hover:cursor-pointer"/>
+                <ListPlus className="text-primary hover:cursor-pointer"/>
             </DialogTrigger>
             <DialogContent>
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit(handleSubmitForm)}>
