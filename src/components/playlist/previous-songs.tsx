@@ -4,17 +4,17 @@ import { SongItem } from "../song-item"
 import UseControls from "@/store/song-control-store"
 import { Playlist } from "@/services/playlist/types"
 import { PlaylistSong } from "@/services/playlist-songs/types"
-import { UseAllSongs } from "@/hooks/useAllSongs"
+import { UseHistorySongs } from "@/hooks/usePreviousSongs"
 
-const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
+const previousPlaylist: Playlist = { id: "history", name: "previous Songs", playlist_songs: [] }
 
-export function DisplayAllSongs() {
+export function DisplayHistorySongs() {
 
     const { setCurrentPlaylist } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
-    const infiniteQuery = UseAllSongs()
+    const infiniteQuery = UseHistorySongs()
     
     useEffect(() => {
       const observer = new IntersectionObserver(
@@ -58,22 +58,26 @@ export function DisplayAllSongs() {
                     infiniteQuery.refetch()
                   }}/>
                 </div>
-                {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
-                    infiniteQuery.data.songs.map((data, i) => {
+                {infiniteQuery.data && infiniteQuery.data.history.length && infiniteQuery.data.history.length > 0 ? (
+                    infiniteQuery.data.history.map((data, i) => {
 
-                    const playlistSong: PlaylistSong = {
-                      playlist_id: "all",
-                      song_id: data.id,
-                      song: data
+                    if(!data.song) {
+                        return null;
                     }
 
-                    allPlaylist.playlist_songs?.push(playlistSong)
+                    const playlistSong: PlaylistSong = {
+                        playlist_id: "history",
+                        song_id: data.song_id,
+                        song: data.song
+                    }
+
+                    previousPlaylist.playlist_songs?.push(playlistSong)
 
                     return (
                         <div key={i}  onClick={() => {
-                          setCurrentPlaylist(allPlaylist)
+                            setCurrentPlaylist(previousPlaylist)
                         }}>
-                          <SongItem song={data}></SongItem>
+                            <SongItem song={data.song}></SongItem>
                         </div>
                     )
                     })

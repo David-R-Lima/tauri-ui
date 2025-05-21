@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from "react"
 import useControls from "../store/song-control-store"
 import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
+import { AddSongToHistory } from "@/services/history"
 
 const baseUrl = import.meta.env.VITE_API_URL
 
 export function Controls() {
     const [open, setOpen] = useState(false);
+    const [addedToHistory, setAddedToHistory] = useState(false)
 
     const {
         currentSong,
@@ -64,6 +66,15 @@ export function Controls() {
             audio.removeEventListener('timeupdate', updateTime)
         }
     }, [currentSong])
+
+    useEffect(() => {
+        if (currentSong && currentTime >= 10 && !addedToHistory) {
+            AddSongToHistory({ song_id: currentSong.id })
+                .catch(console.error)
+            setAddedToHistory(true)
+        }
+    }, [currentTime, currentSong])
+    
 
     return (
         <div className="flex flex-col w-full h-full overflow-hidden">

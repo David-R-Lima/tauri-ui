@@ -9,7 +9,7 @@ import {
     HoverCardTrigger,
   } from "@/components/ui/hover-card"
 import { usePlaylists } from "@/hooks/usePlaylists";
-import { AddSongToPlaylist } from "@/services/songs";
+import { AddSongToPlaylist, LikeSong } from "@/services/songs";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 interface Props {
@@ -32,6 +32,17 @@ export function SongItem({ song }: Props) {
             toast.error("Something went wrong!")
         }
     })
+
+    const likeSongMutation = useMutation({
+        mutationFn: LikeSong,
+        onSuccess: () => {
+            toast.success("Liked song")
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
+
     return (
         <div className="flex h-[70px] items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" >
             <Popover>
@@ -57,7 +68,11 @@ export function SongItem({ song }: Props) {
                         </HoverCardContent>
                     </HoverCard>
 
-                    <Button>Like</Button>
+                    <Button onClick={() => {
+                        likeSongMutation.mutate({
+                            song_id: song.id
+                        })
+                    }}>Like</Button>
                     <Button variant={'destructive'}>Delete</Button>
                 </PopoverContent>
             </Popover>

@@ -4,17 +4,17 @@ import { SongItem } from "../song-item"
 import UseControls from "@/store/song-control-store"
 import { Playlist } from "@/services/playlist/types"
 import { PlaylistSong } from "@/services/playlist-songs/types"
-import { UseAllSongs } from "@/hooks/useAllSongs"
+import { UseLikedSongs } from "@/hooks/useLikedSongs"
 
 const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
-export function DisplayAllSongs() {
+export function DisplayLikedSongs() {
 
     const { setCurrentPlaylist } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
-    const infiniteQuery = UseAllSongs()
+    const infiniteQuery = UseLikedSongs()
     
     useEffect(() => {
       const observer = new IntersectionObserver(

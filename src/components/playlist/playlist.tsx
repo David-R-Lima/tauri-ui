@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { DisplayPlaylist } from "./display-playlist"
 import { DisplayAllSongs } from "./all-songs"
 import { usePlaylists } from "@/hooks/usePlaylists"
+import { DisplayLikedSongs } from "./liked-songs"
+import { DisplayHistorySongs } from "./previous-songs"
 
 export function PlaylistCarousel() {
     const playlistQuery = usePlaylists()
@@ -46,7 +48,12 @@ export function PlaylistCarousel() {
                 <TabsContent value="all" className="w-full h-full">
                     <DisplayAllSongs></DisplayAllSongs>
                 </TabsContent>
-                <TabsContent value="liked" className="w-full h-full"></TabsContent>
+                <TabsContent value="liked" className="w-full h-full">
+                    <DisplayLikedSongs></DisplayLikedSongs>
+                </TabsContent>
+                <TabsContent value="history" className="w-full h-full">
+                    <DisplayHistorySongs></DisplayHistorySongs>
+                </TabsContent>
                 {playlistQuery.data && playlistQuery.data.playlists.map((playlist) => (
                     <TabsContent key={playlist.id} value={playlist.id} className="w-full h-full">
                         <DisplayPlaylist playlistId={playlist.id}></DisplayPlaylist>
