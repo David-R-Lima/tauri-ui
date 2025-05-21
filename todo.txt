@@ -1,11 +1,15 @@
-responsive ui
-
-proper routing
-
-create playlist
-
-all song list
-
 search dialog
+
+alter playlist logic because its now in the api
+
+fix playlist tab because the return from the api was changed
+
+better ui ux
+
+save defaults to a json file(color, theme, etc)
+
+implement liked songs
+
+implement history(list history, add song to history, fetch history on load to put current song)
 
 etc...
