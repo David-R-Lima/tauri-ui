@@ -6,6 +6,8 @@ fix playlist tab because the return from the api was changed
 
 better ui ux
 
+buttons to refetch data
+
 save defaults to a json file(color, theme, etc)
 
 implement liked songs
