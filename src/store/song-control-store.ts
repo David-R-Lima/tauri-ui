@@ -47,18 +47,16 @@ const UseControls = create<ControlsState>((set, get) => ({
   setCurrentSong: async (song) => {
     set({ currentSong: song })
 
-    const { nextSongs, setNextSongs, shuffle, source, sourceId, currentSong } = get()
+    const { setNextSongs, shuffle, source, sourceId, currentSong } = get()
 
-    if (nextSongs && nextSongs.length === 0) {
-      const next = await GetNextSongs({
-        random: shuffle ? Random.TRUE : undefined,
-        source: source,
-        sourceId: sourceId,
-        startId: currentSong?.id,
-      })
+    const next = await GetNextSongs({
+      random: shuffle ? Random.TRUE : undefined,
+      source: source,
+      sourceId: sourceId,
+      startId: currentSong?.id,
+    })
 
-      setNextSongs(next)
-    }
+    setNextSongs(next)
   },
   clearCurrentSong: () => set({ currentSong: undefined }),
   setNextSongs: (songs) => set({ nextSongs: songs }),
@@ -91,11 +89,27 @@ const UseControls = create<ControlsState>((set, get) => ({
   setVolume: (value: number) => set({ volume: value }),
 
   setRepeat: () => set((state) => ({ repeat: !state.repeat })),
-  setShuffle: () => {
-    const { shuffle } = get()
+  setShuffle: async () => {
+    const { shuffle, source, sourceId, currentSong, setNextSongs } = get()
     if (shuffle) {
+      const res = await GetNextSongs({
+        random: undefined,
+        source: source,
+        sourceId: sourceId,
+        startId: currentSong?.id,
+      })
+
+      setNextSongs(res)
       set({ shuffle: false })
     } else {
+      const res = await GetNextSongs({
+        random: Random.TRUE,
+        source: source,
+        sourceId: sourceId,
+        startId: currentSong?.id,
+      })
+
+      setNextSongs(res)
       set({ shuffle: true })
     }
   },
@@ -147,7 +161,14 @@ const UseControls = create<ControlsState>((set, get) => ({
       setPreviousSongs,
       setNextSongs,
       play,
+      currentTime,
     } = get()
+
+    if (currentTime >= 10) {
+      set({ currentTime: 0 })
+
+      return
+    }
 
     if (previousSongs.length === 0) return
 
