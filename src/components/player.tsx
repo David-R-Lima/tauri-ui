@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import useControls from "../store/song-control-store"
-import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
+import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react"
 import { Button } from "./ui/button"
 import { AddSongToHistory } from "@/services/history"
 import { NextSongsSheet } from "./next-songs-sheet"

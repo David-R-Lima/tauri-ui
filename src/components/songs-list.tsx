@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function SongsList({setDisplayPlaylist, displayPlaylist}: Props) {
-    const {setCurrentSong, setCurrentPlaylist} = UseControls()
+    const {setCurrentSong} = UseControls()
 
     return (
         <div className="flex flex-col items-start justify-start w-full h-[65vh] bg-primary-foreground p-4 mt-10">
@@ -30,7 +30,6 @@ export function SongsList({setDisplayPlaylist, displayPlaylist}: Props) {
                     return (
                         <li key={data.song_id} className="flex w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" onClick={() => {
                             if(data.song) {
-                                setCurrentPlaylist(displayPlaylist)
                                 setCurrentSong(data.song)
                             }
                         }}>
