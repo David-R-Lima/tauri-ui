@@ -23,7 +23,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
 
     return (
         <div className="flex justify-between w-full h-[80%] lg:h-[90%]">
-            <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
+            <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-l-xl">
                 <div className="h-[50%] w-[80%]">
                     {data?.playlist.img_url ? (
                         <img src={data?.playlist.img_url ?? ""}></img>
@@ -37,7 +37,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     <p className="font-extrabold italic">Songs: {data?.playlist_songs.meta.totalItems}</p>
                 </div>
             </div>
-            <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
+            <div className="w-full lg:w-[70%] xl:w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
                 <div className="px-4 py-2">
                     <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                         refetch()
@@ -48,11 +48,11 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     if (!playlistSong || !playlistSong.song) return null
 
                     return (
-                        <div key={playlistSong.song_id}  onClick={() => {
-                            setSource(Source.PLAYLIST)
-                            setSourceId(playlistId)
-                        }}>
-                            <SongItem song={playlistSong.song}></SongItem>
+                        <div key={playlistSong.song_id}>
+                            <SongItem song={playlistSong.song} onClick={() => {
+                                setSource(Source.PLAYLIST)
+                                setSourceId(playlistId)
+                            }} />
                         </div>
                     )
                     })

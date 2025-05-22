@@ -44,7 +44,7 @@ export function DisplayHistorySongs() {
 
     return (
         <div className="flex justify-between w-full h-[80%] lg:h-[90%]">
-            <div className="flex flex-col items-center justify-center w-[20%] h-full p-6 bg-primary rounded-l-xl">
+            <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-l-xl">
                 <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>
                 </div>
@@ -53,7 +53,7 @@ export function DisplayHistorySongs() {
                     <p className="font-extrabold italic">Songs: {infiniteQuery.data?.meta.totalItems}</p>
                 </div>
             </div>
-            <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
+            <div className="w-full lg:w-[70%] xl:w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
                 <div className="px-4 py-2">
                   <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                     infiniteQuery.refetch()
@@ -75,10 +75,10 @@ export function DisplayHistorySongs() {
                     previousPlaylist.playlist_songs?.push(playlistSong)
 
                     return (
-                        <div key={i}  onClick={() => {
-                            setSource(Source.ALL)
-                        }}>
-                            <SongItem song={data.song}></SongItem>
+                        <div key={i}>
+                          <SongItem song={data.song} onClick={() => {
+                              setSource(Source.ALL)
+                          }} />
                         </div>
                     )
                     })

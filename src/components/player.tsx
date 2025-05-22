@@ -34,7 +34,7 @@ export function Controls() {
         previousSong
     } = useControls()
 
-      const audioRef = useRef<HTMLAudioElement | null>(null)
+    const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Play/pause effect based on state
     useEffect(() => {
@@ -144,9 +144,7 @@ export function Controls() {
                     <div className="flex gap-4">
                         <Popover>
                             <PopoverTrigger>
-                                <Button>
                                     {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
-                                </Button>
                             </PopoverTrigger>
                             <PopoverContent className="flex items-center justify-center w-6 m-2">
                                 <Slider value={[volume * 100]} className="h-28" orientation="vertical" onValueChange={(e) => {

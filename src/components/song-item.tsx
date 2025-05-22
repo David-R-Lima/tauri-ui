@@ -1,24 +1,21 @@
 import { Song } from "@/services/songs/types";
 import UseControls from "@/store/song-control-store";
-import { CheckIcon, ChevronRight, Download, EllipsisVertical } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
-import {
-    HoverCard,
-    HoverCardContent,
-    HoverCardTrigger,
-  } from "@/components/ui/hover-card"
+import { AudioLines, CheckIcon, Download, Heart, Play, Plus, Trash } from "lucide-react";
 import { usePlaylists } from "@/hooks/usePlaylists";
-import { AddSongToPlaylist, LikeSong } from "@/services/songs";
+import { AddSongToPlaylist, UpdateSong } from "@/services/songs";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Liked } from "@/services/enums/liked";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+
 interface Props {
     song: Song
+    onClick: () => void
 }
 
-export function SongItem({ song }: Props) {
+export function SongItem({ song, onClick }: Props) {
 
-    const {setCurrentSong} = UseControls()
+    const {currentSong, isPlaying, play, setCurrentTime, pause} = UseControls()
 
     const playlists = usePlaylists()
 
@@ -33,8 +30,8 @@ export function SongItem({ song }: Props) {
         }
     })
 
-    const likeSongMutation = useMutation({
-        mutationFn: LikeSong,
+    const updateSongMutation = useMutation({
+        mutationFn: UpdateSong,
         onSuccess: () => {
             toast.success("Liked song")
         },
@@ -44,45 +41,25 @@ export function SongItem({ song }: Props) {
     })
 
     return (
-        <div className="flex h-[70px] items-center w-full space-x-4 border-b rounded-lg p-2 m-2 hover:cursor-pointer hover:bg-secondary" >
-            <Popover>
-                <PopoverTrigger asChild>
-                    <EllipsisVertical />
-                </PopoverTrigger>
-                <PopoverContent className="flex flex-col w-[200px] space-y-4">
-                    <HoverCard openDelay={0}>
-                        <Button asChild>
-                            <HoverCardTrigger>
-                                <p>Add To Playlist</p> <ChevronRight />
-                            </HoverCardTrigger>
-                        </Button>
-                        <HoverCardContent side="right" align="center" sideOffset={15} className="flex flex-col w-[150px] space-y-4 max-h-[250px] overflow-y-scroll">
-                            {playlists.data && playlists.data.playlists.map((playlist) => (
-                                <Button onClick={() => {
-                                    addSongtoPlaylistMutation.mutate({
-                                        songId: song.id,
-                                        playlistId: playlist.id,
-                                    })
-                                }}>{playlist.name ?? "no name"}</Button>
-                            ))}
-                        </HoverCardContent>
-                    </HoverCard>
+        <div className="flex h-[70px] items-center justify-between w-full space-x-4 border-b rounded-lg p-2 m-2 hover:bg-secondary" >
+            <div className="flex items-center space-x-4 hover:cursor-pointer" onClick={() => {
+                onClick()
+            }}> 
+                {currentSong?.id === song.id && isPlaying && (
+                    <AudioLines className="animate-pulse text-primary" />
+                )}
+                {(currentSong?.id !== song.id || !isPlaying) && (
+                    <Play  onClick={() => {
+                        pause()
+                        setCurrentTime(0)
+                        play()
+                    }}/>
+                )}
 
-                    <Button onClick={() => {
-                        likeSongMutation.mutate({
-                            song_id: song.id
-                        })
-                    }}>Like</Button>
-                    <Button variant={'destructive'}>Delete</Button>
-                </PopoverContent>
-            </Popover>
-            <div className="flex items-center space-x-4" onClick={() => {
-                setCurrentSong(song)
-            }}>
                 {song.img_url && (
                     <img className="size-10" src={song.img_url} alt="" />
                 )}
-                <p>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                <p className="truncate max-w-[100px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-full">{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
 
                 {
                     song.duration && (
@@ -97,6 +74,51 @@ export function SongItem({ song }: Props) {
                 ) : (
                     <Download className="text-primary"></Download>
                 )}
+            </div>
+            <div className="flex items-center justify-center space-x-4">
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="hover:cursor-pointer">                
+                        <Plus />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Playlists</DropdownMenuLabel>
+                        <DropdownMenuSeparator></DropdownMenuSeparator>
+                        {playlists.data && playlists.data.playlists.map((playlist, i) => (
+                            <DropdownMenuItem key={i} className="hover:cursor-pointer" onClick={() => {
+                                addSongtoPlaylistMutation.mutate({
+                                    songId: song.id,
+                                    playlistId: playlist.id,
+                                })
+                            }}>
+                                {playlist.name ?? "no name"}
+                            </DropdownMenuItem>
+
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {
+                    song.liked ? (
+                        <Heart className="fill-primary text-primary transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
+                            updateSongMutation.mutate({
+                                song_id: song.id,
+                                liked: Liked.FALSE
+                            })
+
+                            song.liked = false
+                        }}/>
+                    ) : (
+                        <Heart className="transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
+                            updateSongMutation.mutate({
+                                song_id: song.id,
+                                liked: Liked.TRUE
+                            })
+
+                            song.liked = true
+                        }}/>
+                    )
+                }
+                <Trash className="text-red-500 hover:animate-pulse hover:cursor-pointer"/>
             </div>
         </div>
     )

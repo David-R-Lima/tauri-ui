@@ -63,13 +63,21 @@ export async function AddSongToPlaylist({ songId, playlistId }: AddSongToPlaylis
   return data
 }
 
-interface LikeSongProps {
+interface updateSongProps {
   song_id: string
+  liked?: Liked
+  duration?: number
+  artist?: string
+  title?: string
 }
 
-export async function LikeSong(props: LikeSongProps) {
-  await api.post('/song/like', {
+export async function UpdateSong(props: updateSongProps) {
+  await api.put('/song', {
     song_id: props.song_id,
+    liked: props.liked,
+    duration: props.duration,
+    artist: props.artist,
+    title: props.title,
   })
 }
 

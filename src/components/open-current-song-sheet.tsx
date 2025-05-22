@@ -33,9 +33,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger>
-                <Button>
                     <ChevronUp />
-                </Button>
             </SheetTrigger>
             <SheetContent className="h-[100vh]" side="bottom">
                 <Button className="absolute top-4 right-4" onClick={() => {

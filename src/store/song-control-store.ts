@@ -3,6 +3,7 @@ import { Song } from '../services/songs/types'
 import { GetNextSongs } from '@/services/songs'
 import { Random } from '@/services/enums/random'
 import { Source } from '@/services/enums/source'
+import { Shuffle } from 'lucide-react'
 
 interface ControlsState {
   currentSong: Song | undefined
@@ -17,7 +18,7 @@ interface ControlsState {
   sourceId: string | undefined
   setSource: (source: Source) => void
   setSourceId: (sourceeId: string) => void
-  setCurrentSong: (song: Song | undefined) => void
+  setCurrentSong: (song: Song, fromNextSongsSidebar?: boolean) => void
   clearCurrentSong: () => void
   setNextSongs: (songs: Song[]) => void
   setPreviousSongs: (songs: Song[]) => void
@@ -44,20 +45,82 @@ const UseControls = create<ControlsState>((set, get) => ({
   source: Source.ALL,
   sourceId: undefined,
 
-  setCurrentSong: async (song) => {
-    set({ currentSong: song })
+  setCurrentSong: async (song, fromNextSongsSidebar) => {
+    const {
+      currentSong,
+      previousSongs,
+      nextSongs,
+      setPreviousSongs,
+      setNextSongs,
+      shuffle,
+      source,
+      sourceId
+    } = get();
+  
+    if (currentSong?.id === song.id) return;
 
-    const { setNextSongs, shuffle, source, sourceId, currentSong } = get()
+    let tempNext = nextSongs 
+    let tempPrev = previousSongs
 
-    const next = await GetNextSongs({
-      random: shuffle ? Random.TRUE : undefined,
-      source: source,
-      sourceId: sourceId,
-      startId: currentSong?.id,
-    })
+    if(!fromNextSongsSidebar) {
+      const fetchedSongs = await GetNextSongs({
+        source: source,
+        sourceId: sourceId,
+        random: shuffle ? Random.TRUE : Random.FALSE,
+        startId: song.id
+      })
+  
+      tempNext = fetchedSongs
+    }
 
-    setNextSongs(next)
+    let where: "prev" | "next" | undefined = undefined
+  
+    const prevIndex = tempPrev.findIndex(s => s.id === song.id);
+    const nextIndex = tempNext.findIndex(s => s.id === song.id);
+  
+    if (prevIndex !== -1) where = "prev";
+    if (nextIndex !== -1) where = "next";
+
+    switch (where) {
+      case "prev": {
+        console.log(tempNext)
+        if (currentSong) {
+          tempNext = [currentSong, ...tempNext]
+        }
+        tempPrev = tempPrev.slice(0, prevIndex)
+        break;
+      }
+      case "next": {
+        if (currentSong) {
+          tempPrev = [...tempPrev, currentSong]
+        }
+        tempNext = tempNext.slice(nextIndex + 1)
+        break;
+      }
+      case undefined: {
+        if (currentSong) {
+          tempPrev = [...tempPrev, currentSong];
+        }
+        break;
+      }
+    }
+
+    if(fromNextSongsSidebar && tempNext.length === 0) {
+      const fetchedSongs = await GetNextSongs({
+        source: source,
+        sourceId: sourceId,
+        random: shuffle ? Random.TRUE : Random.FALSE,
+        startId: song.id
+      })
+  
+      tempNext = fetchedSongs
+    }
+
+    set({ currentSong: song });
+    setPreviousSongs(tempPrev)
+    setNextSongs(tempNext)
   },
+  
   clearCurrentSong: () => set({ currentSong: undefined }),
   setNextSongs: (songs) => set({ nextSongs: songs }),
   setPreviousSongs: (songs) => set({ previousSongs: songs }),
@@ -120,7 +183,6 @@ const UseControls = create<ControlsState>((set, get) => ({
       previousSongs,
       setPreviousSongs,
       shuffle,
-      setCurrentSong,
       play,
       source,
       sourceId,
@@ -129,7 +191,9 @@ const UseControls = create<ControlsState>((set, get) => ({
 
     let updatedNextSongs = nextSongs
 
-    if (nextSongs && nextSongs.length <= 1) {
+    // console.log(updatedNextSongs)
+
+    if (nextSongs && nextSongs.length === 0) {
       updatedNextSongs = await GetNextSongs({
         random: shuffle ? Random.TRUE : undefined,
         source: source,
@@ -137,7 +201,13 @@ const UseControls = create<ControlsState>((set, get) => ({
         startId: currentSong?.id,
       })
 
-      setNextSongs(updatedNextSongs)
+      setNextSongs(updatedNextSongs.slice(1))
+
+      if(updatedNextSongs.length  > 0) {
+        set({currentSong: updatedNextSongs[0]})
+      }
+
+      return;
     }
 
     const next = updatedNextSongs[0]
@@ -148,8 +218,10 @@ const UseControls = create<ControlsState>((set, get) => ({
       setPreviousSongs([...previousSongs, currentSong])
     }
 
-    setCurrentSong(next)
-    setNextSongs(updatedNextSongs.slice(1))
+    set({
+      currentSong: next,
+      nextSongs: updatedNextSongs.slice(1),
+    });
     play()
   },
   previousSong: () => {
@@ -157,29 +229,22 @@ const UseControls = create<ControlsState>((set, get) => ({
       previousSongs,
       currentSong,
       nextSongs,
-      setCurrentSong,
       setPreviousSongs,
       setNextSongs,
       play,
-      currentTime,
     } = get()
-
-    if (currentTime >= 10) {
-      set({ currentTime: 0 })
-
-      return
-    }
 
     if (previousSongs.length === 0) return
 
-    const last = previousSongs[previousSongs.length - 1]
-    setPreviousSongs(previousSongs.slice(0, -1))
+    const last = previousSongs[previousSongs.length - 1];
+    // setPreviousSongs(previousSongs.slice(previousSongs.length - 1, previousSongs.length))
+    setPreviousSongs(previousSongs.slice(0, -1));
 
     if (currentSong) {
       setNextSongs([currentSong, ...nextSongs])
     }
 
-    setCurrentSong(last)
+    set({currentSong: last})
     play()
   },
   handleEndSong: () => {

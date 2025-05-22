@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import UseControls from "@/store/song-control-store";
 import { useEffect, useRef, useState } from "react";
 
-
 export function NextSongsSheet() {
     const { nextSongs, previousSongs, currentSong, setCurrentSong } = UseControls()
 
@@ -18,30 +17,32 @@ export function NextSongsSheet() {
         }
     }, [currentSong, scroll]);
 
+    let tempPrevSongs = previousSongs.slice(0, 10)
+
+    tempPrevSongs.splice(tempPrevSongs.length -1, 1)
+
     return (
         <Sheet onOpenChange={() => {
             setScroll(!scroll)
         }}>
             <SheetTrigger>
-                <Button>
                     <AlignJustify />
-                </Button>
             </SheetTrigger>
-            <SheetContent className="p-4 min-w-[30vw]">
+            <SheetContent className="p-4 w-full">
                 <h1>Next songs</h1>
                 <div className="space-y-4 h-full overflow-y-scroll p-4">
-                    {previousSongs.slice(0, 10).map((song) => (
-                        <div className="flex items-center justify-between space-x-2">
+                    {previousSongs.slice(0, 10).map((song, i) => (
+                        <div key={i} className="flex items-center justify-between space-x-2">
                             <div className="flex items-center space-x-2">
                                 {song.img_url ? (
                                     <img src={song.img_url} alt="" className="size-12"/>
                                 ) : (
                                     <Disc2 />
                                 )}
-                                <p className="truncate">{song.title}</p> 
+                                <p className="truncate max-w-[150px]">{song.title}</p> 
                             </div>
                             <Button onClick={() => {
-                                setCurrentSong(song)
+                                setCurrentSong(song, true)
                             }}>
                                 <Play />
                             </Button>
@@ -55,23 +56,23 @@ export function NextSongsSheet() {
                                 ) : (
                                     <Disc2 />
                                 )}
-                                <p>{currentSong.title}</p> 
+                                <p className="truncate max-w-[150px]">{currentSong.title}</p> 
                             </div>
                             <AudioLines className="size-12 text-primary"/>
                         </div>
                     )}
-                    {nextSongs.map((song) => (
-                        <div className="flex items-center justify-between space-x-2">
+                    {nextSongs.map((song, i) => (
+                        <div key={i} className="flex items-center justify-between space-x-2">
                             <div className="flex items-center space-x-2">
                                 {song.img_url ? (
                                     <img src={song.img_url} alt="" className="size-12"/>
                                 ) : (
                                     <Disc2 />
                                 )}
-                                <p className="truncate">{song.title}</p> 
+                                <p className="truncate max-w-[200px]">{song.title}</p> 
                             </div>
                             <Button onClick={() => {
-                                setCurrentSong(song)
+                                setCurrentSong(song, true)
                             }}>
                                 <Play />
                             </Button>
