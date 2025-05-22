@@ -1,137 +1,168 @@
 import { create } from 'zustand'
 import { Song } from '../services/songs/types'
-import { Playlist } from '@/services/playlist/types'
+import { GetNextSongs } from '@/services/songs'
+import { Random } from '@/services/enums/random'
+import { Source } from '@/services/enums/source'
 
 interface ControlsState {
   currentSong: Song | undefined
-  currentPlaylist: Playlist | undefined
-  randomizedPlaylist: Playlist | undefined
+  nextSongs: Song[]
+  previousSongs: Song[]
   isPlaying: boolean
   currentTime: number
   repeat: boolean
   shuffle: boolean
   volume: number
+  source: Source
+  sourceId: string | undefined
+  setSource: (source: Source) => void
+  setSourceId: (sourceeId: string) => void
   setCurrentSong: (song: Song | undefined) => void
   clearCurrentSong: () => void
+  setNextSongs: (songs: Song[]) => void
+  setPreviousSongs: (songs: Song[]) => void
   play: () => void
   pause: () => void
   setCurrentTime: (time: number) => void
   setVolume: (value: number) => void
-  setCurrentPlaylist: (playlist: Playlist | undefined) => void
   setRepeat: () => void
   setShuffle: () => void
   nextSong: () => void
   previousSong: () => void
   handleEndSong: () => void
-  setRandomizedPlaylist: () => void
 }
 
 const UseControls = create<ControlsState>((set, get) => ({
   currentSong: undefined,
+  nextSongs: [],
+  previousSongs: [],
   isPlaying: false,
   currentTime: 0,
   volume: 0.2,
-  currentPlaylist: undefined,
   repeat: false,
   shuffle: false,
-  randomizedPlaylist: undefined,
+  source: Source.ALL,
+  sourceId: undefined,
 
-  setCurrentSong: (song) => set({ currentSong: song }),
+  setCurrentSong: async (song) => {
+    set({ currentSong: song })
+
+    const { nextSongs, setNextSongs, shuffle, source, sourceId, currentSong } = get()
+
+    if (nextSongs && nextSongs.length === 0) {
+      const next = await GetNextSongs({
+        random: shuffle ? Random.TRUE : undefined,
+        source: source,
+        sourceId: sourceId,
+        startId: currentSong?.id,
+      })
+
+      setNextSongs(next)
+    }
+  },
   clearCurrentSong: () => set({ currentSong: undefined }),
+  setNextSongs: (songs) => set({ nextSongs: songs }),
+  setPreviousSongs: (songs) => set({ previousSongs: songs }),
 
-  play: () => set({ isPlaying: true }),
+  setSource: (source) => set({ source }),
+  setSourceId: (sourceId) => set({ sourceId }),
+
+  play: async () => {
+    const { nextSongs, setNextSongs, shuffle, source, sourceId, currentSong } = get()
+
+    if (nextSongs && nextSongs.length === 0) {
+      const next = await GetNextSongs({
+        random: shuffle ? Random.TRUE : undefined,
+        source: source,
+        sourceId: sourceId,
+        startId: currentSong?.id,
+      })
+
+      setNextSongs(next)
+    }
+
+    set({
+      isPlaying: true,
+    })
+  },
   pause: () => set({ isPlaying: false }),
 
   setCurrentTime: (time) => set({ currentTime: time }),
   setVolume: (value: number) => set({ volume: value }),
 
-  setCurrentPlaylist: (playlist: Playlist | undefined) => set({ currentPlaylist: playlist }),
   setRepeat: () => set((state) => ({ repeat: !state.repeat })),
   setShuffle: () => {
-    const { shuffle, setRandomizedPlaylist } = get()
+    const { shuffle } = get()
     if (shuffle) {
       set({ shuffle: false })
     } else {
       set({ shuffle: true })
-      setRandomizedPlaylist()
     }
   },
-  nextSong: () => {
+  nextSong: async () => {
     const {
-      currentPlaylist,
-      randomizedPlaylist,
       currentSong,
+      nextSongs,
+      previousSongs,
+      setPreviousSongs,
       shuffle,
       setCurrentSong,
-      pause,
       play,
+      source,
+      sourceId,
+      setNextSongs,
     } = get()
 
-    const basePlaylist = shuffle ? randomizedPlaylist : currentPlaylist
+    let updatedNextSongs = nextSongs
 
-    if (!basePlaylist?.playlist_songs || basePlaylist.playlist_songs.length === 0) return
+    if (nextSongs && nextSongs.length <= 1) {
+      updatedNextSongs = await GetNextSongs({
+        random: shuffle ? Random.TRUE : undefined,
+        source: source,
+        sourceId: sourceId,
+        startId: currentSong?.id,
+      })
 
-    const songs = basePlaylist.playlist_songs
-    const currentIndex = songs.findIndex((s) => s.song_id === currentSong?.id)
+      setNextSongs(updatedNextSongs)
+    }
 
-    // Fallback to first if current song not found
-    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % songs.length
+    const next = updatedNextSongs[0]
 
-    pause()
-    set({ currentTime: 0 }) // Reset time
-    setCurrentSong(songs[nextIndex].song)
+    if (!next) return
+
+    if (currentSong) {
+      setPreviousSongs([...previousSongs, currentSong])
+    }
+
+    setCurrentSong(next)
+    setNextSongs(updatedNextSongs.slice(1))
     play()
   },
-
   previousSong: () => {
     const {
-      currentPlaylist,
-      randomizedPlaylist,
+      previousSongs,
       currentSong,
-      shuffle,
+      nextSongs,
       setCurrentSong,
-      pause,
+      setPreviousSongs,
+      setNextSongs,
       play,
     } = get()
 
-    const basePlaylist = shuffle ? randomizedPlaylist : currentPlaylist
+    if (previousSongs.length === 0) return
 
-    if (!basePlaylist?.playlist_songs || basePlaylist.playlist_songs.length === 0) return
+    const last = previousSongs[previousSongs.length - 1]
+    setPreviousSongs(previousSongs.slice(0, -1))
 
-    const songs = basePlaylist.playlist_songs
-    const currentIndex = songs.findIndex((s) => s.song_id === currentSong?.id)
+    if (currentSong) {
+      setNextSongs([currentSong, ...nextSongs])
+    }
 
-    // Fallback to last if current song not found
-    const previousIndex =
-      currentIndex === -1 ? songs.length - 1 : (currentIndex - 1 + songs.length) % songs.length
-
-    pause()
-    set({ currentTime: 0 }) // Reset time
-    setCurrentSong(songs[previousIndex].song)
+    setCurrentSong(last)
     play()
   },
   handleEndSong: () => {
     get().nextSong()
-  },
-  setRandomizedPlaylist: () => {
-    const { currentPlaylist } = get()
-    if (!currentPlaylist?.playlist_songs) return
-
-    // Shallow copy of playlist_songs
-    const shuffled = [...currentPlaylist.playlist_songs]
-
-    // Fisher-Yates Shuffle
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-    }
-
-    set({
-      randomizedPlaylist: {
-        ...currentPlaylist,
-        playlist_songs: shuffled,
-      },
-    })
   },
 }))
 

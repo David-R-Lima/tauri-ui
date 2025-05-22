@@ -5,12 +5,13 @@ import UseControls from "@/store/song-control-store"
 import { Playlist } from "@/services/playlist/types"
 import { PlaylistSong } from "@/services/playlist-songs/types"
 import { UseHistorySongs } from "@/hooks/usePreviousSongs"
+import { Source } from "@/services/enums/source"
 
 const previousPlaylist: Playlist = { id: "history", name: "previous Songs", playlist_songs: [] }
 
 export function DisplayHistorySongs() {
 
-    const { setCurrentPlaylist } = UseControls()
+    const { setSource } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -48,12 +49,12 @@ export function DisplayHistorySongs() {
                     <AudioLines className="w-full h-full"/>
                 </div>
                 <div className="text-xl">
-                    <p className="font-extrabold italic">Playlist: All songs</p>
+                    <p className="font-extrabold italic">Playlist: Previous songs</p>
                     <p className="font-extrabold italic">Songs: {infiniteQuery.data?.meta.totalItems}</p>
                 </div>
             </div>
             <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-                <div>
+                <div className="px-4 py-2">
                   <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                     infiniteQuery.refetch()
                   }}/>
@@ -75,7 +76,7 @@ export function DisplayHistorySongs() {
 
                     return (
                         <div key={i}  onClick={() => {
-                            setCurrentPlaylist(previousPlaylist)
+                            setSource(Source.ALL)
                         }}>
                             <SongItem song={data.song}></SongItem>
                         </div>

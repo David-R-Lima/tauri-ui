@@ -3,13 +3,14 @@ import UseControls from "@/store/song-control-store"
 import { useQuery } from "@tanstack/react-query"
 import { Disc3, RefreshCcw } from "lucide-react"
 import { SongItem } from "../song-item"
+import { Source } from "@/services/enums/source"
 
 interface Props {
     playlistId: string
 }
 export function DisplayPlaylist({ playlistId }: Props) {
 
-    const {setCurrentPlaylist} = UseControls()
+    const {setSource, setSourceId} = UseControls()
 
     const { data, isPending, refetch} = useQuery({
         queryKey: ['playlist', playlistId],
@@ -37,7 +38,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                 </div>
             </div>
             <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-                <div>
+                <div className="px-4 py-2">
                     <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                         refetch()
                     }}/>
@@ -48,7 +49,8 @@ export function DisplayPlaylist({ playlistId }: Props) {
 
                     return (
                         <div key={playlistSong.song_id}  onClick={() => {
-                            setCurrentPlaylist(data.playlist)
+                            setSource(Source.PLAYLIST)
+                            setSourceId(playlistId)
                         }}>
                             <SongItem song={playlistSong.song}></SongItem>
                         </div>

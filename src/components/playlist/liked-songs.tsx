@@ -5,12 +5,13 @@ import UseControls from "@/store/song-control-store"
 import { Playlist } from "@/services/playlist/types"
 import { PlaylistSong } from "@/services/playlist-songs/types"
 import { UseLikedSongs } from "@/hooks/useLikedSongs"
+import { Source } from "@/services/enums/source"
 
 const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
 export function DisplayLikedSongs() {
 
-    const { setCurrentPlaylist } = UseControls()
+    const { setSource } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -53,7 +54,7 @@ export function DisplayLikedSongs() {
                 </div>
             </div>
             <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-                <div>
+                <div className="px-4 py-2">
                   <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                     infiniteQuery.refetch()
                   }}/>
@@ -71,7 +72,7 @@ export function DisplayLikedSongs() {
 
                     return (
                         <div key={i}  onClick={() => {
-                          setCurrentPlaylist(allPlaylist)
+                          setSource(Source.LIKED)
                         }}>
                           <SongItem song={data}></SongItem>
                         </div>

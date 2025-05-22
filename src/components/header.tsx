@@ -13,7 +13,7 @@ interface HeaderProps {
 export function Header({setHeaderState}: HeaderProps) {
     return (
         <div className="w-full h-[50px] flex items-start justify-center">
-            <div className=" flex items-center justify-between w-[30%] h-full bg-secondary-foreground rounded-b-full px-8 py-2">
+            <div className=" flex items-center justify-between w-[70%] lg:w-[50%] xl:w-[40%] h-full bg-secondary-foreground rounded-b-full px-8 py-2">
                 <Home className="text-primary hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.HOME)}></Home>
                 <ListEnd className="text-primary hover:cursor-pointer" onClick={() => setHeaderState(HeaderState.LISTPLAYLIST)}/>
                 <AddPlaylistDialog></AddPlaylistDialog>

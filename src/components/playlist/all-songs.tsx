@@ -1,7 +1,6 @@
 import { AudioLines, RefreshCcw } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { SongItem } from "../song-item"
-import UseControls from "@/store/song-control-store"
 import { Playlist } from "@/services/playlist/types"
 import { PlaylistSong } from "@/services/playlist-songs/types"
 import { UseAllSongs } from "@/hooks/useAllSongs"
@@ -9,8 +8,6 @@ import { UseAllSongs } from "@/hooks/useAllSongs"
 const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
 export function DisplayAllSongs() {
-
-    const { setCurrentPlaylist } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -53,7 +50,7 @@ export function DisplayAllSongs() {
                 </div>
             </div>
             <div className="w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
-                <div>
+                <div className="px-4 py-2">
                   <RefreshCcw className="hover:cursor-pointer" onClick={() => {
                     infiniteQuery.refetch()
                   }}/>
@@ -70,9 +67,7 @@ export function DisplayAllSongs() {
                     allPlaylist.playlist_songs?.push(playlistSong)
 
                     return (
-                        <div key={i}  onClick={() => {
-                          setCurrentPlaylist(allPlaylist)
-                        }}>
+                        <div key={i}>
                           <SongItem song={data}></SongItem>
                         </div>
                     )
