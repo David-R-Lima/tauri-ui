@@ -10,7 +10,7 @@ interface Props {
 }
 export function DisplayPlaylist({ playlistId }: Props) {
 
-    const {setSource, setSourceId} = UseControls()
+    const {setSource, setSourceId, setCurrentSong } = UseControls()
 
     const { data, isPending, refetch} = useQuery({
         queryKey: ['playlist', playlistId],
@@ -47,11 +47,14 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     data?.playlist_songs.data.map((playlistSong) => {
                     if (!playlistSong || !playlistSong.song) return null
 
+                    const { song } = playlistSong 
+
                     return (
                         <div key={playlistSong.song_id}>
-                            <SongItem song={playlistSong.song} onClick={() => {
+                            <SongItem song={song} onClick={() => {
                                 setSource(Source.PLAYLIST)
                                 setSourceId(playlistId)
+                                setCurrentSong(song)
                             }} />
                         </div>
                     )
