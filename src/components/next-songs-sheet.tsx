@@ -1,11 +1,12 @@
 import { AlignJustify, AudioLines, Disc2, Play } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 import { Button } from "./ui/button";
 import UseControls from "@/store/song-control-store";
 import { useEffect, useRef, useState } from "react";
+import { DivButton } from "./ui/div-but-button";
 
 export function NextSongsSheet() {
-    const { nextSongs, previousSongs, currentSong, setCurrentSong } = UseControls()
+    const { currentSong, playlist, currentIndex, setCurrentSong } = UseControls()
 
     const currentSongRef = useRef<HTMLDivElement>(null);
 
@@ -17,67 +18,53 @@ export function NextSongsSheet() {
         }
     }, [currentSong, scroll]);
 
-    let tempPrevSongs = previousSongs.slice(0, 10)
-
-    tempPrevSongs.splice(tempPrevSongs.length -1, 1)
-
     return (
         <Sheet onOpenChange={() => {
             setScroll(!scroll)
         }}>
             <SheetTrigger>
-                    <AlignJustify />
+            <DivButton>
+                <AlignJustify />
+            </DivButton>
             </SheetTrigger>
             <SheetContent className="p-4 w-full">
-                <h1>Next songs</h1>
+                <SheetTitle>Next songs</SheetTitle>
                 <div className="space-y-4 h-full overflow-y-scroll p-4">
-                    {previousSongs.slice(0, 10).map((song, i) => (
-                        <div key={i} className="flex items-center justify-between space-x-2">
-                            <div className="flex items-center space-x-2">
-                                {song.img_url ? (
-                                    <img src={song.img_url} alt="" className="size-12"/>
-                                ) : (
-                                    <Disc2 />
-                                )}
-                                <p className="truncate max-w-[150px]">{song.title}</p> 
+                    {playlist.map((song, i) => {
+                        if(i === currentIndex) {
+                            return (
+                                <div ref={currentSongRef} className="flex items-center justify-between animate-pulse">
+                                    <div className="flex items-center space-x-2">
+                                        {song.img_url ? (
+                                            <img src={song.img_url} alt="" className="size-12"/>
+                                        ) : (
+                                            <Disc2 />
+                                        )}
+                                        <p className="truncate max-w-[150px]">{song.title}</p> 
+                                    </div>
+                                    <AudioLines className="size-12 text-primary"/>
+                                </div>
+                            )
+                        }
+
+                        return (
+                            <div key={i} className="flex items-center justify-between space-x-2">
+                                <div className="flex items-center space-x-2">
+                                    {song.img_url ? (
+                                        <img src={song.img_url} alt="" className="size-12"/>
+                                    ) : (
+                                        <Disc2 />
+                                    )}
+                                    <p className="truncate max-w-[200px]">{song.title}</p> 
+                                </div>
+                                <Button onClick={() => {
+                                    setCurrentSong(song)
+                                }}>
+                                    <Play />
+                                </Button>
                             </div>
-                            <Button onClick={() => {
-                                setCurrentSong(song, true)
-                            }}>
-                                <Play />
-                            </Button>
-                        </div>
-                    ))}
-                    {currentSong && (
-                        <div ref={currentSongRef} className="flex items-center justify-between animate-pulse">
-                            <div className="flex items-center space-x-2">
-                                {currentSong.img_url ? (
-                                    <img src={currentSong.img_url} alt="" className="size-12"/>
-                                ) : (
-                                    <Disc2 />
-                                )}
-                                <p className="truncate max-w-[150px]">{currentSong.title}</p> 
-                            </div>
-                            <AudioLines className="size-12 text-primary"/>
-                        </div>
-                    )}
-                    {nextSongs.map((song, i) => (
-                        <div key={i} className="flex items-center justify-between space-x-2">
-                            <div className="flex items-center space-x-2">
-                                {song.img_url ? (
-                                    <img src={song.img_url} alt="" className="size-12"/>
-                                ) : (
-                                    <Disc2 />
-                                )}
-                                <p className="truncate max-w-[200px]">{song.title}</p> 
-                            </div>
-                            <Button onClick={() => {
-                                setCurrentSong(song, true)
-                            }}>
-                                <Play />
-                            </Button>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             </SheetContent>
         </Sheet>

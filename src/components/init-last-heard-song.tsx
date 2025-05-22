@@ -8,7 +8,7 @@ export function InitLastHeard() {
 
   useEffect(() => {
     if (isSuccess && data?.history?.[0]?.song) {
-      setCurrentSong(data.history[0].song)
+      setCurrentSong(data.history[0].song, true)
     }
   }, [isSuccess, data, setCurrentSong])
 

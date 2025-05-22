@@ -1,6 +1,6 @@
 import { Song } from "@/services/songs/types";
 import UseControls from "@/store/song-control-store";
-import { AudioLines, CheckIcon, Download, Heart, Play, Plus, Trash } from "lucide-react";
+import { AudioLines, Heart, Play, Plus, Trash } from "lucide-react";
 import { usePlaylists } from "@/hooks/usePlaylists";
 import { AddSongToPlaylist, UpdateSong } from "@/services/songs";
 import { useMutation } from "@tanstack/react-query";
@@ -69,11 +69,11 @@ export function SongItem({ song, onClick }: Props) {
                         </p>
                     )
                 }
-                {song.local_url ? (
+                {/* {song.local_url ? (
                     <CheckIcon className="text-primary"></CheckIcon>
                 ) : (
                     <Download className="text-primary"></Download>
-                )}
+                )} */}
             </div>
             <div className="flex items-center justify-center space-x-4">
                 <DropdownMenu>

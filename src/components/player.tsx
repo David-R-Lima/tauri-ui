@@ -9,6 +9,7 @@ import { NextSongsSheet } from "./next-songs-sheet"
 import { OpenCurrentSongSheet } from "./open-current-song-sheet"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Slider } from "./ui/slider"
+import { DivButton } from "./ui/div-but-button"
 
 const baseUrl = import.meta.env.VITE_API_URL
 
@@ -137,14 +138,16 @@ export function Controls() {
                         </p>
 
                         <div className="text-lg text-primary font-semibold">
-                            {currentSong ? `Now playing: ${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}
+                            <p className="truncate max-w-[250px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}</p>
                         </div>
                     </div>
 
                     <div className="flex gap-4">
                         <Popover>
                             <PopoverTrigger>
+                                <DivButton>
                                     {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
+                                </DivButton>
                             </PopoverTrigger>
                             <PopoverContent className="flex items-center justify-center w-6 m-2">
                                 <Slider value={[volume * 100]} className="h-28" orientation="vertical" onValueChange={(e) => {

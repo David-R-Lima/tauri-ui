@@ -1,10 +1,11 @@
 import { ArrowLeftFromLine, ArrowRightToLine, AudioLines, ChevronDown, ChevronUp, Pause, Play, Repeat, Shuffle, Volume2, VolumeX } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import UseControls from "@/store/song-control-store";
 import { Dispatch, SetStateAction } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Slider } from "./ui/slider";
+import { DivButton } from "./ui/div-but-button";
 
 interface Props {
     open: boolean
@@ -33,9 +34,12 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger>
+                <DivButton>
                     <ChevronUp />
+                </DivButton>
             </SheetTrigger>
             <SheetContent className="h-[100vh]" side="bottom">
+                <SheetTitle className="hidden"></SheetTitle>
                 <Button className="absolute top-4 right-4" onClick={() => {
                     setOpen(false)
                 }}>
@@ -100,9 +104,9 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                         <div className="absolute right-6 flex gap-4 items-center mt-4">
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button>
+                                    <DivButton>
                                         {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
-                                    </Button>
+                                    </DivButton>
                                 </PopoverTrigger>
                                 <PopoverContent className="flex items-center justify-center w-6 m-2">
                                     <Slider value={[volume * 100]} className="h-28" orientation="vertical" onValueChange={(e) => {

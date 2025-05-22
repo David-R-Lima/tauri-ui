@@ -11,7 +11,7 @@ const previousPlaylist: Playlist = { id: "history", name: "previous Songs", play
 
 export function DisplayHistorySongs() {
 
-    const { setSource } = UseControls()
+    const { setSource, setCurrentSong } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -62,22 +62,23 @@ export function DisplayHistorySongs() {
                 {infiniteQuery.data && infiniteQuery.data.history.length && infiniteQuery.data.history.length > 0 ? (
                     infiniteQuery.data.history.map((data, i) => {
 
-                    if(!data.song) {
-                        return null;
-                    }
+                    if(!data.song) return null;
+
+                    const { song } = data
 
                     const playlistSong: PlaylistSong = {
                         playlist_id: "history",
-                        song_id: data.song_id,
-                        song: data.song
+                        song_id: song.id,
+                        song
                     }
 
                     previousPlaylist.playlist_songs?.push(playlistSong)
 
                     return (
                         <div key={i}>
-                          <SongItem song={data.song} onClick={() => {
+                          <SongItem song={song} onClick={() => {
                               setSource(Source.ALL)
+                              setCurrentSong(song)
                           }} />
                         </div>
                     )
