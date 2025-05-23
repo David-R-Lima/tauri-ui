@@ -21,10 +21,10 @@ fn load_config(exe_dir: &PathBuf) -> Config {
         .expect("Failed to parse config.json")
 }
 
-#[tauri::command]
-fn get_api_url(config: State<'_, Config>) -> String {
-    config.vite_api_url.clone()
-}
+// #[tauri::command]
+// fn get_api_url(config: State<'_, Config>) -> String {
+//     config.vite_api_url.clone()
+// }
 
 #[tauri::command]
 fn greet(name: &str) -> String {
