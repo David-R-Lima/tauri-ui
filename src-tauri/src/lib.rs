@@ -47,23 +47,25 @@ pub fn run() {
         let config = config.clone();
         move || {
             if cfg!(windows) {
-                // Windows: run start.bat, passing env vars to cmd
-                let script_path = exe_dir.join("api/start.bat");
-                println!("Starting Windows API script at: {}", script_path.display());
+                    let api_dir = exe_dir.join("api");
+                    let script_path = api_dir.join("start.bat");
+                    println!("Starting Windows API script at: {}", script_path.display());
 
-                let status = Command::new("cmd")
-                    .args(&["/C", script_path.to_str().unwrap()])
-                    .env("DATABASE_URL", &config.database_url)
-                    .env("DIRECT_URL", &config.direct_url)
-                    .env("VITE_API_URL", &config.vite_api_url)
-                    .env("PORT", &config.port)
-                    .status()
-                    .expect("Failed to execute start.bat");
+                    let status = Command::new("cmd")
+                        .args(&["/C", "start.bat"])  // Executa script relativo à `current_dir`
+                        .current_dir(&api_dir)       // Define o diretório como /root/api
+                        .env("DATABASE_URL", &config.database_url)
+                        .env("DIRECT_URL", &config.direct_url)
+                        .env("VITE_API_URL", &config.vite_api_url)
+                        .env("PORT", &config.port)
+                        .status()
+                        .expect("Failed to execute start.bat");
 
-                if !status.success() {
-                    eprintln!("Windows API start script failed with {:?}", status);
+                    if !status.success() {
+                        eprintln!("Windows API start script failed with {:?}", status);
+                    }
                 }
-            } else {
+                else {
                 // Unix-like: run start.sh using bash, passing env vars
                 let script_path = exe_dir.join("api/start.sh");
                 println!("Starting Unix API script at: {}", script_path.display());
