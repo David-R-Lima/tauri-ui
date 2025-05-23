@@ -1,21 +1,34 @@
 import { Song } from "@/services/songs/types";
 import UseControls from "@/store/song-control-store";
-import { AudioLines, Heart, Play, Plus, Trash } from "lucide-react";
+import { AudioLines, Download, EllipsisVertical, Heart, Loader2, Minus, Play, Plus, Trash } from "lucide-react";
 import { usePlaylists } from "@/hooks/usePlaylists";
-import { AddSongToPlaylist, UpdateSong } from "@/services/songs";
+import { AddSong, DeleteSong, UpdateSong } from "@/services/songs";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Liked } from "@/services/enums/liked";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
+import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { AddSongToPlaylist, RemoveSongFromPlaylist } from "@/services/playlist";
+import { HardDelete } from "@/services/enums/hardDelete";
+import { Checkbox } from "./ui/checkbox";
 
 interface Props {
     song: Song
     onClick: () => void
+    playlistId?: string
 }
 
-export function SongItem({ song, onClick }: Props) {
+export function SongItem({ song, onClick, playlistId }: Props) {
 
     const {currentSong, isPlaying, play, setCurrentTime, pause} = UseControls()
+
+    const [alertOpen, setAlertOpen] = useState(false)
+
+    const [popoverOpen, setPopoverOpen] = useState(false)
+
+    const [onlyDeleteFile, setOnlyDeleteFile] = useState(true)
 
     const playlists = usePlaylists()
 
@@ -30,10 +43,43 @@ export function SongItem({ song, onClick }: Props) {
         }
     })
 
+    const removeSongFromPlaylistMutation = useMutation({
+        mutationFn: RemoveSongFromPlaylist,
+        onSuccess: () => {
+            toast.success("Song Removed to playlist")
+            playlists.refetch()
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
+
     const updateSongMutation = useMutation({
         mutationFn: UpdateSong,
         onSuccess: () => {
             toast.success("Liked song")
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
+
+    const deleteSongMutation = useMutation({
+        mutationFn: DeleteSong,
+        onSuccess: () => {
+            toast.success("Deleted song")
+            playlists.refetch()
+        },
+        onError: () => {
+            toast.error("Something went wrong!")
+        }
+    })
+
+    const downloadSongMutation = useMutation({
+        mutationKey: ["download", playlistId],
+        mutationFn: AddSong,
+        onSuccess: () => {
+            toast.success("Downloaded song")
         },
         onError: () => {
             toast.error("Something went wrong!")
@@ -69,11 +115,20 @@ export function SongItem({ song, onClick }: Props) {
                         </p>
                     )
                 }
-                {/* {song.local_url ? (
-                    <CheckIcon className="text-primary"></CheckIcon>
-                ) : (
-                    <Download className="text-primary"></Download>
-                )} */}
+                {
+                    !song.local_url && song.youtube_url && !downloadSongMutation.isPending && (
+                        <Download className="hover:animate-pulse text-primary" onClick={() => {
+                            downloadSongMutation.mutate({
+                                url: song.youtube_url as string
+                            })
+                        }}></Download>
+                    )
+                }
+                {
+                    downloadSongMutation.isPending && (
+                        <Loader2 className="animate-spin text-primary" />
+                    )
+                }
             </div>
             <div className="flex items-center justify-center space-x-4">
                 <DropdownMenu>
@@ -96,7 +151,6 @@ export function SongItem({ song, onClick }: Props) {
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
-
                 {
                     song.liked ? (
                         <Heart className="fill-primary text-primary transition-colors hover:animate-pulse hover:cursor-pointer" onClick={() => {
@@ -118,7 +172,61 @@ export function SongItem({ song, onClick }: Props) {
                         }}/>
                     )
                 }
-                <Trash className="text-red-500 hover:animate-pulse hover:cursor-pointer"/>
+                <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                    <PopoverTrigger className="hover:cursor-pointer">
+                        <EllipsisVertical />
+                    </PopoverTrigger>
+                    <PopoverContent className="space-y-2">
+                        {song && playlistId && (
+                            <div className="flex space-x-4 hover:cursor-pointer hover:bg-secondary p-2 rounded-lg" onClick={() => {
+                                if(song && playlistId) {
+                                    removeSongFromPlaylistMutation.mutate({
+                                        songId: song.id,
+                                        playlistId: playlistId
+                                    })
+                                }
+                            }}> 
+                                <Minus />
+                                <p>Remove from playlist</p>
+                            </div>
+                        )}
+                        <AlertDialog open={alertOpen} onOpenChange={(open) => {
+                                setAlertOpen(open);
+                                if (!open) {
+                                    setPopoverOpen(false);
+                                }
+                        }}>
+                            <AlertDialogTrigger className="flex space-x-4 w-full hover:cursor-pointer hover:bg-secondary p-2 rounded-lg">
+                                <Trash className="text-red-500 hover:animate-pulse hover:cursor-pointer"/> 
+                                <p>Delete song</p>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete your
+                                    account and remove your data from our servers.
+                                </AlertDialogDescription>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox checked={onlyDeleteFile} onCheckedChange={() => {
+                                        setOnlyDeleteFile(!onlyDeleteFile)
+                                    }} className="hover:cursor-pointer"/>
+                                    <p>Only delete file</p>
+                                </div>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => {
+                                        deleteSongMutation.mutate({
+                                            hard_delete: onlyDeleteFile ? HardDelete.FALSE : HardDelete.TRUE,
+                                            song_id: song.id
+                                        })
+                                    }}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     )

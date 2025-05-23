@@ -40,7 +40,9 @@ export function SettingsDialog() {
                             {addYoutubeSongMutation.isPending && <Loader2 className="animate-spin"/>}
                             {!addYoutubeSongMutation.isPending && (
                                 <Button onClick={() => {
-                                    addYoutubeSongMutation.mutate(url)
+                                    addYoutubeSongMutation.mutate({
+                                        url
+                                    })
                                 }}>Add</Button>
                             )}
                         </AccordionContent>

@@ -23,8 +23,12 @@ export async function GetPlaylists(ctx: QueryFunctionContext) {
   return data
 }
 
-export async function GetPlaylist(ctx: QueryFunctionContext) {
-  const [, id] = ctx.queryKey
+interface GetPlaylistParams {
+  id?: string,
+  page?: number
+}
+
+export async function GetPlaylist({ id, page }: GetPlaylistParams) {
 
   const { data } = await api.get<{
     playlist: Playlist,
@@ -32,7 +36,11 @@ export async function GetPlaylist(ctx: QueryFunctionContext) {
       data: PlaylistSong[],
       meta: IPaginationResponse
     }
-  }>('/playlist/' + id)
+  }>('/playlist/' + id, {
+    params: {
+      page,
+    },
+  })
 
   return data
 }
@@ -43,4 +51,29 @@ export async function CreatePlaylist(formData: CreatePlaylistType) {
   await api.post('/playlist', {
     ...formData
   })
+}
+interface AddSongToPlaylistProps {
+  songId: string
+  playlistId: string
+}
+
+export async function AddSongToPlaylist({ songId, playlistId }: AddSongToPlaylistProps) {
+  const data = await api.post(`/playlist/add`, {
+    songId: songId,
+    playlistId: playlistId,
+  })
+
+  return data
+}
+
+
+export async function RemoveSongFromPlaylist({ songId, playlistId }: AddSongToPlaylistProps) {
+  const data = await api.delete(`/playlist/remove`, {
+    data: {
+      songId: songId,
+      playlistId: playlistId,
+    }
+  })
+
+  return data
 }

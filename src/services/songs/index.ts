@@ -6,6 +6,7 @@ import { Liked } from '../enums/liked'
 import { Random } from '../enums/random'
 import { Source } from '../enums/source'
 import { Reverse } from '../enums/reverse'
+import { HardDelete } from '../enums/hardDelete'
 
 interface getSongsProps {
   page: number
@@ -44,26 +45,15 @@ export async function GetSongs({
   return data
 }
 
-export async function AddSong(url: string) {
+export interface AddSongProps {
+  url: string
+}
+
+export async function AddSong({ url }: AddSongProps) {
   await api.post('/song/download', {
     url,
   })
 }
-
-interface AddSongToPlaylistProps {
-  songId: string
-  playlistId: string
-}
-
-export async function AddSongToPlaylist({ songId, playlistId }: AddSongToPlaylistProps) {
-  const data = await api.post(`/playlist/add`, {
-    songId: songId,
-    playlistId: playlistId,
-  })
-
-  return data
-}
-
 interface updateSongProps {
   song_id: string
   liked?: Liked
@@ -104,16 +94,18 @@ export async function GetNextSongs(props: GetNextSongsProps) {
   return data
 }
 
-// export async function GetNextSongs(ctx: QueryFunctionContext) {
-//   const [, random, source, sourceId, startId] = ctx.queryKey
-//   const { data } = await api.get<Song[]>('/song/next', {
-//     params: {
-//       random: random,
-//       source: source,
-//       source_id: sourceId,
-//       start_id: startId,
-//     },
-//   })
+interface DeleteSongProps {
+  song_id?: string
+  hard_delete?: HardDelete
+}
 
-//   return data
-// }
+export async function DeleteSong({ song_id, hard_delete }: DeleteSongProps) {
+  const { data } = await api.delete("/song", {
+    data: {
+      song_id,
+      hard_delete
+    }
+  })
+
+  return data
+}
