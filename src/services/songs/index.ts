@@ -5,6 +5,7 @@ import { OrderBy } from '../enums/order-by'
 import { Liked } from '../enums/liked'
 import { Random } from '../enums/random'
 import { Source } from '../enums/source'
+import { Reverse } from '../enums/reverse'
 
 interface getSongsProps {
   page: number
@@ -86,6 +87,7 @@ interface GetNextSongsProps {
   source?: Source
   sourceId?: string
   startId?: string
+  reverse?: Reverse
 }
 
 export async function GetNextSongs(props: GetNextSongsProps) {
@@ -95,6 +97,7 @@ export async function GetNextSongs(props: GetNextSongsProps) {
       source: props.source,
       source_id: props.sourceId,
       start_id: props.startId,
+      reverse: props.reverse
     },
   })
 

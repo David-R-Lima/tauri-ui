@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { DivButton } from "./ui/div-but-button";
 
 export function NextSongsSheet() {
-    const { currentSong, playlist, currentIndex, setCurrentSong } = UseControls()
+    const { currentSong, playlist, currentIndex, setCurrentSongFromSideBar } = UseControls()
 
     const currentSongRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +58,7 @@ export function NextSongsSheet() {
                                     <p className="truncate max-w-[200px]">{song.title}</p> 
                                 </div>
                                 <Button onClick={() => {
-                                    setCurrentSong(song)
+                                    setCurrentSongFromSideBar(i)
                                 }}>
                                     <Play />
                                 </Button>
