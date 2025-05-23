@@ -11,7 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-/src/api/
+/api/
+/src-tauri/api/
+.env.prod
+.env.local
 .env
 
 # Editor directories and files
