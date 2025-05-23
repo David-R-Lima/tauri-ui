@@ -59,7 +59,7 @@ export function DisplayHistorySongs() {
                     infiniteQuery.refetch()
                   }}/>
                 </div>
-                {infiniteQuery.data && infiniteQuery.data.history.length && infiniteQuery.data.history.length > 0 ? (
+                {infiniteQuery.data && infiniteQuery.data.history?.length && infiniteQuery.data.history?.length > 0 ? (
                     infiniteQuery.data.history.map((data, i) => {
 
                     if(!data.song) return null;
