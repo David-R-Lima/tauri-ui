@@ -78,6 +78,10 @@ export function Controls() {
                 .catch(console.error)
             setAddedToHistory(true)
         }
+
+        return () => {
+            setAddedToHistory(false)
+        }
     }, [currentTime, currentSong])
     
 

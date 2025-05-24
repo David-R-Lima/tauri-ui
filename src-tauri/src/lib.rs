@@ -46,26 +46,30 @@ pub fn run() {
         let exe_dir = exe_dir.clone();
         let config = config.clone();
         move || {
-            if cfg!(windows) {
+             if cfg!(windows) {
                     let api_dir = exe_dir.join("api");
                     let script_path = api_dir.join("start.bat");
                     println!("Starting Windows API script at: {}", script_path.display());
 
-                    let status = Command::new("cmd")
-                        .args(&["/C", "start.bat"])  // Executa script relativo à `current_dir`
-                        .current_dir(&api_dir)       // Define o diretório como /root/api
+                    let status = Command::new("powershell")
+                        .args([
+                            "-WindowStyle", "Hidden",
+                            "-Command",
+                            &format!("Start-Process -FilePath '{}' -WorkingDirectory '{}' -WindowStyle Hidden", 
+                                    script_path.to_str().unwrap(), 
+                                    api_dir.to_str().unwrap())
+                        ])
                         .env("DATABASE_URL", &config.database_url)
                         .env("DIRECT_URL", &config.direct_url)
                         .env("VITE_API_URL", &config.vite_api_url)
                         .env("PORT", &config.port)
                         .status()
-                        .expect("Failed to execute start.bat");
+                        .expect("Failed to execute start.bat silently");
 
                     if !status.success() {
                         eprintln!("Windows API start script failed with {:?}", status);
                     }
-                }
-                else {
+            } else {
                 // Unix-like: run start.sh using bash, passing env vars
                 let script_path = exe_dir.join("api/start.sh");
                 println!("Starting Unix API script at: {}", script_path.display());
