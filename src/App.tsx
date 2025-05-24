@@ -9,7 +9,7 @@ import { useAppSettingsStore } from "./store/app-settings-store";
 import { Home } from "./components/home/home";
 
 function App() {
-  const [state, setState] = useState<HeaderState>(HeaderState.LISTPLAYLIST)
+  const [state, setState] = useState<HeaderState>(HeaderState.HOME)
 
   const { color } = useAppSettingsStore()
 

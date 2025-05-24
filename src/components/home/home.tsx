@@ -47,7 +47,6 @@ export function Home() {
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            console.log("fetching")
             infiniteQuery.fetchNextPage() // Trigger fetching the next page
           }
         },
