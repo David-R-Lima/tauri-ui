@@ -9,6 +9,10 @@ pub struct Config {
     pub direct_url: String,
     pub vite_api_url: String,
     pub port: String
+    pub google_client_id: String
+    pub google_client_secret: String
+    pub google_redirect_url: String
+    pub youtube_api_key: String
 }
 
 pub fn load_config(exe_dir: &PathBuf) -> Config {
@@ -21,7 +25,11 @@ pub fn load_config(exe_dir: &PathBuf) -> Config {
             "database_url": "sqlite://:memory:",
             "direct_url": "http://localhost",
             "vite_api_url": "http://localhost/api",
-            "port": "3333"
+            "port": "3333",
+            "google_client_id": "",
+            "google_client_secret": "",
+            "google_redirect_url": "",
+            "youtube_api_key": ""
         }"#;
 
         // Create the file and write default content

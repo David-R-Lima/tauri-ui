@@ -6,6 +6,7 @@ import { useState } from "react";
 import { HeaderState } from "./enums/header";
 import { cn } from "./lib/utils";
 import { useAppSettingsStore } from "./store/app-settings-store";
+import { Home } from "./components/home/home";
 
 function App() {
   const [state, setState] = useState<HeaderState>(HeaderState.LISTPLAYLIST)
@@ -19,7 +20,7 @@ function App() {
         </header>
         <section className='flex flex-col flex-1 w-full h-[60vh] xl:h-[90vh] max-h-[90vh] overflow-hidden py-6 px-10' >
           {state === HeaderState.HOME && (
-            <div></div>
+            <Home></Home>
           )}
           {state === HeaderState.LISTPLAYLIST && (
             <PlaylistCarousel></PlaylistCarousel>

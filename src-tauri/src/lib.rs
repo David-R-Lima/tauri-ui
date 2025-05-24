@@ -63,6 +63,10 @@ pub fn run() {
                         .env("DIRECT_URL", &config.direct_url)
                         .env("VITE_API_URL", &config.vite_api_url)
                         .env("PORT", &config.port)
+                        .env("GOOGLE_CLIENT_ID", &config.google_client_id)
+                        .env("GOOGLE_CLIENT_SECRET", &config.google_client_secret)
+                        .env("GOOGLE_REDIRECT_URI", &config.google_redirect_url)
+                        .env("YOUTUBE_API_KEY", &config.youtube_api_key)
                         .status()
                         .expect("Failed to execute start.bat silently");
 
@@ -80,6 +84,10 @@ pub fn run() {
                     .env("DIRECT_URL", &config.direct_url)
                     .env("VITE_API_URL", &config.vite_api_url)
                     .env("PORT", &config.port)
+                    .env("GOOGLE_CLIENT_ID", &config.google_client_id)
+                    .env("GOOGLE_CLIENT_SECRET", &config.google_client_secret)
+                    .env("GOOGLE_REDIRECT_URI", &config.google_redirect_url)
+                    .env("YOUTUBE_API_KEY", &config.youtube_api_key)
                     .status()
                     .expect("Failed to execute start.sh");
 

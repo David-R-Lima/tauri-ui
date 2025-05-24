@@ -33,7 +33,7 @@ export function NextSongsSheet() {
                     {playlist.map((song, i) => {
                         if(i === currentIndex) {
                             return (
-                                <div ref={currentSongRef} className="flex items-center justify-between animate-pulse">
+                                <div ref={currentSongRef} key={i} className="flex items-center justify-between animate-pulse">
                                     <div className="flex items-center space-x-2">
                                         {song.img_url ? (
                                             <img src={song.img_url} alt="" className="size-12"/>
