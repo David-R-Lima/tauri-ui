@@ -10,7 +10,11 @@ struct Config {
     database_url: String,
     direct_url: String,
     vite_api_url: String,
-    port: String
+    port: String,
+    google_client_id: String,
+    google_client_secret: String,
+    google_redirect_url: String,
+    youtube_api_key: String,
 }
 
 fn load_config(exe_dir: &PathBuf) -> Config {
