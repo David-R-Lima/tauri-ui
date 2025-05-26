@@ -90,7 +90,7 @@ export function Controls() {
     }, [currentTime, currentSong])
 
     useEffect(() => {
-        if( currentSong) {
+        if(currentSong) {
             UpdateNowListening({
                 song_id: currentSong.id
             })
