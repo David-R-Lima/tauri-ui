@@ -6,16 +6,19 @@ import { PlaylistSong } from "@/services/playlist-songs/types"
 import { UseAllSongs } from "@/hooks/useAllSongs"
 import { Source } from "@/services/enums/source"
 import UseControls from "@/store/song-control-store"
+import { OrderBy } from "@/services/enums/order-by"
 
 const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
 export function DisplayAllSongs() {
 
-  const { setSource, setCurrentSong } = UseControls()
+  const { setSource, setCurrentSong, order, setOrder } = UseControls()
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
-    const infiniteQuery = UseAllSongs()
+    const infiniteQuery = UseAllSongs({
+      orderBy: OrderBy.DESC
+    })
     
     useEffect(() => {
       const observer = new IntersectionObserver(

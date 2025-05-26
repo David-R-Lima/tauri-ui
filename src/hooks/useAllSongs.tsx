@@ -1,8 +1,12 @@
+import { OrderBy } from "@/services/enums/order-by";
 import { GetSongs } from "@/services/songs";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+interface Props {
+  orderBy?: OrderBy;
+}
 
-export function UseAllSongs() {
+export function UseAllSongs({ orderBy } : Props) {
     const infiniteQuery = useInfiniteQuery({
         queryKey: [
           'all-songs'
@@ -10,6 +14,7 @@ export function UseAllSongs() {
         queryFn: ({ pageParam = 1 }) => {
           return GetSongs({
             page: Number(pageParam),
+            order_by: orderBy,
           })
         },
         getNextPageParam: ({ meta }) => {
