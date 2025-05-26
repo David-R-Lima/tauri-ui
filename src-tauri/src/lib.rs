@@ -15,6 +15,7 @@ struct Config {
     google_client_secret: String,
     google_redirect_url: String,
     youtube_api_key: String,
+    api_key: String
 }
 
 fn load_config(exe_dir: &PathBuf) -> Config {
@@ -71,6 +72,7 @@ pub fn run() {
                         .env("GOOGLE_CLIENT_SECRET", &config.google_client_secret)
                         .env("GOOGLE_REDIRECT_URI", &config.google_redirect_url)
                         .env("YOUTUBE_API_KEY", &config.youtube_api_key)
+                        .env("API_KEY", &config.api_key)
                         .status()
                         .expect("Failed to execute start.bat silently");
 
@@ -92,6 +94,7 @@ pub fn run() {
                     .env("GOOGLE_CLIENT_SECRET", &config.google_client_secret)
                     .env("GOOGLE_REDIRECT_URI", &config.google_redirect_url)
                     .env("YOUTUBE_API_KEY", &config.youtube_api_key)
+                    .env("API_KEY", &config.api_key)
                     .status()
                     .expect("Failed to execute start.sh");
 

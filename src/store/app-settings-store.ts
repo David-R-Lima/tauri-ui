@@ -8,6 +8,6 @@ interface ControlsState {
 }
 
 export const useAppSettingsStore = create<ControlsState>()((set) => ({
-  color: Colors.blue,
+  color: localStorage.getItem("color") as Colors ?? Colors.blue,
   setColor: (color: Colors) => set({ color }),
 }))

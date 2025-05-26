@@ -8,8 +8,8 @@ import { Source } from '../enums/source'
 import { Reverse } from '../enums/reverse'
 import { HardDelete } from '../enums/hardDelete'
 
-interface getSongsProps {
-  page: number
+export interface getSongsProps {
+  page?: number
   limit?: number
   order_by?: OrderBy
   liked?: Liked

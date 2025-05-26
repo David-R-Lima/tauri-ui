@@ -1,9 +1,8 @@
 import { Liked } from "@/services/enums/liked";
-import { GetSongs } from "@/services/songs";
+import { GetSongs, getSongsProps } from "@/services/songs";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-
-export function UseLikedSongs() {
+export function UseLikedSongs({ duration_gte, duration_lte, text, order_by}: getSongsProps) {
     const infiniteQuery = useInfiniteQuery({
         queryKey: [
           'liked-songs'
@@ -11,7 +10,11 @@ export function UseLikedSongs() {
         queryFn: ({ pageParam = 1 }) => {
           return GetSongs({
             page: Number(pageParam),
-            liked: Liked.TRUE
+            liked: Liked.TRUE,
+            duration_gte,
+            duration_lte,
+            text,
+            order_by
           })
         },
         getNextPageParam: ({ meta }) => {

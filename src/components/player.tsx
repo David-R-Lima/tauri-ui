@@ -10,6 +10,8 @@ import { OpenCurrentSongSheet } from "./open-current-song-sheet"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Slider } from "./ui/slider"
 import { DivButton } from "./ui/div-but-button"
+import { HandleEvents } from "./handle-events"
+import { UpdateNowListening } from "@/services/now-listening"
 
 const baseUrl = import.meta.env.VITE_API_URL
 
@@ -37,7 +39,7 @@ export function Controls() {
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  // Play/pause effect based on state
+    // Play/pause effect based on state
     useEffect(() => {
         const audio = audioRef.current
 
@@ -52,12 +54,14 @@ export function Controls() {
         }
     }, [isPlaying, currentSong])
 
+    //updatte volume
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume
         }
     }, [volume])
 
+    //update time
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
@@ -72,6 +76,7 @@ export function Controls() {
         }
     }, [currentSong])
 
+    //add to history after 10 seconds
     useEffect(() => {
         if (currentSong && currentTime >= 10 && !addedToHistory) {
             AddSongToHistory({ song_id: currentSong.id })
@@ -83,7 +88,14 @@ export function Controls() {
             setAddedToHistory(false)
         }
     }, [currentTime, currentSong])
-    
+
+    useEffect(() => {
+        if(currentSong) {
+            UpdateNowListening({
+                song_id: currentSong.id
+            })
+        }
+    }, [currentSong])
 
     return (
         <div className="flex flex-col w-full h-full overflow-hidden">
@@ -129,17 +141,15 @@ export function Controls() {
                         </Button>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <p className="w-16 h-16 object-cover text-primary rounded">                    
-                            {currentSong?.img_url ? (
-                                <img
-                                    className="w-16 h-16 object-cover text-primary rounded"
-                                    src={currentSong?.img_url}
-                                    alt={currentSong?.title || "Song image"}
-                                />  
-                            ) : (
-                                <AudioLines className="w-full h-full"/>
-                            )}
-                        </p>
+                        {currentSong?.img_url ? (
+                            <img
+                                className="size-16 object-cover text-primary rounded"
+                                src={currentSong?.img_url}
+                                alt={currentSong?.title || "Song image"}
+                            />  
+                        ) : (
+                            <AudioLines className="w-16 h-16 text-primary"/>
+                        )}
 
                         <div className="text-lg text-primary font-semibold">
                             <p className="truncate max-w-[250px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}</p>
@@ -197,6 +207,8 @@ export function Controls() {
                 }}
                 />
             )}
+
+            <HandleEvents />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { ListPlus } from "lucide-react";
+import { ListPlus, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -7,8 +7,11 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { CreatePlaylist } from "@/services/playlist";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export function AddPlaylistDialog() {
+    const [open, setOpen] = useState(false)
     const {
         setValue,
         handleSubmit,
@@ -19,7 +22,8 @@ export function AddPlaylistDialog() {
     const submit = useMutation({
         mutationFn: CreatePlaylist,
         onSuccess: () => {
-            console.log('Success')
+            toast.message("Playlist created successfully")
+            setOpen(false)
         },
         onError: (error) => {
             console.error(error)
@@ -33,7 +37,7 @@ export function AddPlaylistDialog() {
     }
     
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <ListPlus className="text-primary hover:cursor-pointer"/>
             </DialogTrigger>
@@ -46,7 +50,14 @@ export function AddPlaylistDialog() {
                     <Input placeholder="Description" onChange={(e) => {
                         setValue('description', e.target.value)
                     }}></Input>
-                    <Button>Create</Button>
+                    {submit.isPending && (
+                        <Button onClick={(e) =>{
+                            e.preventDefault()
+                        }}><Loader2 className="animate-spin"></Loader2></Button>
+                    )}
+                    {!submit.isPending && (
+                        <Button>Create</Button>
+                    )}
                 </form>
             </DialogContent>
         </Dialog>

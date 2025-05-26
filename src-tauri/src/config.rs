@@ -13,6 +13,7 @@ pub struct Config {
     pub google_client_secret: String
     pub google_redirect_url: String
     pub youtube_api_key: String
+    pub api_key: String
 }
 
 pub fn load_config(exe_dir: &PathBuf) -> Config {
@@ -29,7 +30,8 @@ pub fn load_config(exe_dir: &PathBuf) -> Config {
             "google_client_id": "",
             "google_client_secret": "",
             "google_redirect_url": "",
-            "youtube_api_key": ""
+            "youtube_api_key": "",
+            "api_key": "",
         }"#;
 
         // Create the file and write default content
