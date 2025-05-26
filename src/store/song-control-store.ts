@@ -200,7 +200,7 @@ const UseControls = create<ControlsState>((set, get) => ({
     });
   },
   nextSong: async () => {
-    const { playlist, currentIndex, source, sourceId, shuffle } = get();
+    const { playlist, currentIndex, source, sourceId, shuffle, orderBy } = get();
   
     const newIndex = currentIndex + 1;
   
@@ -211,10 +211,17 @@ const UseControls = create<ControlsState>((set, get) => ({
         sourceId,
         random: shuffle ? Random.TRUE : undefined,
         startId: tempStart ? tempStart.id : undefined,
+        reverse: orderBy === OrderBy.ASC ? Reverse.FALSE : Reverse.TRUE
       });
 
       if (fetchedSongs.length > 0) {
-        const newPlaylist = [...playlist, ...fetchedSongs];
+        let newPlaylist
+
+        if(orderBy === OrderBy.ASC) {
+          newPlaylist = [...playlist, ...fetchedSongs];
+        } else {
+          newPlaylist = [...playlist, ...fetchedSongs.reverse()];
+        }
   
         set({
           playlist: newPlaylist,
