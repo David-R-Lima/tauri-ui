@@ -4,10 +4,6 @@ better ui ux
 
 save defaults to a json file(color, theme, etc)
 
-filters
-
-fetch from yt api,
-
 offline playback
 
 etc...

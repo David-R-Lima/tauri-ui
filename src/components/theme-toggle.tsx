@@ -33,6 +33,7 @@ export function ModeToggle() {
         </div>
         <Select defaultValue={color} onValueChange={(e) => {
            setColor(e as Colors)
+           localStorage.setItem("color", e)
         }}>
           <SelectTrigger className="w-[180px]" >
             <SelectValue placeholder="Color" />
