@@ -22,6 +22,7 @@ export function DisplayAllSongs() {
     const [durationGte, setDurationGte] = useState<number | undefined>(undefined)
     const [durationLte, setDurationLte] = useState<number | undefined>(undefined)
     const [order, setOrder] = useState<OrderBy>(orderBy)
+    const [resetFilters, setResetFilters] = useState(false)
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -36,6 +37,13 @@ export function DisplayAllSongs() {
       setOrderBy(order)
       infiniteQuery.refetch()
     }
+
+    useEffect(() => {
+      if (resetFilters) {
+        infiniteQuery.refetch()
+        setResetFilters(false)
+      }
+    }, [text, durationGte, durationLte, resetFilters])
     
     useEffect(() => {
       const observer = new IntersectionObserver(
@@ -123,6 +131,14 @@ export function DisplayAllSongs() {
                     <Button onClick={applyFilters}>Apply filters</Button>
                   </DialogContent>
                 </Dialog>
+              </div>
+              <div>
+                <Button variant={'link'} onClick={() => {
+                  setText(undefined)
+                  setDurationGte(undefined)
+                  setDurationLte(undefined)
+                  setResetFilters(true)
+                }}>Remove filters</Button>
               </div>
             </div>
             <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">

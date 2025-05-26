@@ -24,6 +24,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
     const [durationGte, setDurationGte] = useState<number | undefined>(undefined)
     const [durationLte, setDurationLte] = useState<number | undefined>(undefined)
     const [order, setOrder] = useState<OrderBy>(orderBy)
+    const [resetFilters, setResetFilters] = useState(false)
 
     const { data, isPending, refetch, hasNextPage, fetchNextPage} = useInfiniteQuery({
         queryKey: ['playlist', playlistId],
@@ -57,6 +58,13 @@ export function DisplayPlaylist({ playlistId }: Props) {
         setOrderBy(order)
         refetch()
     }
+
+    useEffect(() => {
+      if (resetFilters) {
+        refetch()
+        setResetFilters(false)
+      }
+    }, [text, durationGte, durationLte, resetFilters])
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -147,6 +155,14 @@ export function DisplayPlaylist({ playlistId }: Props) {
                     <Button onClick={applyFilters}>Apply filters</Button>
                   </DialogContent>
                 </Dialog>
+              </div>
+              <div>
+                <Button variant={'link'} onClick={() => {
+                  setText(undefined)
+                  setDurationGte(undefined)
+                  setDurationLte(undefined)
+                  setResetFilters(true)
+                }}>Remove filters</Button>
               </div>
             </div>
             <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">

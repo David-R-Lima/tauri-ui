@@ -21,6 +21,7 @@ export function DisplayHistorySongs() {
 
     const [text, setText] = useState<string | undefined>(undefined)
     const [order, setOrder] = useState<OrderBy>(orderBy)
+    const [resetFilters, setResetFilters] = useState(false)
 
     const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -33,6 +34,13 @@ export function DisplayHistorySongs() {
       setOrderBy(order)
       infiniteQuery.refetch()
     }
+
+    useEffect(() => {
+      if (resetFilters) {
+        infiniteQuery.refetch()
+        setResetFilters(false)
+      }
+    }, [text, resetFilters])
     
     useEffect(() => {
       const observer = new IntersectionObserver(
@@ -102,6 +110,12 @@ export function DisplayHistorySongs() {
                 </DialogContent>
               </Dialog>
             </div>
+            <div>
+                <Button variant={'link'} onClick={() => {
+                  setText(undefined)
+                  setResetFilters(true)
+                }}>Remove filters</Button>
+              </div>
           </div>
           <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">
             <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
