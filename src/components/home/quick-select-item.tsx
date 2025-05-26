@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../ui/card"
-import { Play } from "lucide-react"
+import { AudioLines, Play } from "lucide-react"
 import { History } from "@/services/history/types"
 import UseControls from "@/store/song-control-store"
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function QuickSelectItem({item}: Props) {
-    const { setCurrentSong } = UseControls()
+    const { currentSong, setCurrentSong, isPlaying } = UseControls()
     return (
         <Card>
             <CardContent className="flex flex-col items-center justify-between space-y-2">
@@ -20,11 +20,15 @@ export function QuickSelectItem({item}: Props) {
                         <h1 className="truncate max-w-[90%]">{item.song?.title}</h1>
                     )}
                 </div>
+                {currentSong && currentSong.id === item.song_id && isPlaying ? (
+                    <AudioLines size={32} className="animate-pulse text-primary" />
+                ) : (
                     <Play size={32} className="hover:animate-pulse hover:text-primary hover:cursor-pointer" onClick={() => {
                         if(item.song) {
                             setCurrentSong(item.song)
                         }
                     }}></Play>
+                )}
             </CardContent>
         </Card>
     )
