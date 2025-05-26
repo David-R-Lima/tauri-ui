@@ -48,7 +48,7 @@ const UseControls = create<ControlsState>((set, get) => ({
   shuffle: false,
   source: Source.ALL,
   sourceId: undefined,
-  orderBy: OrderBy.DESC,
+  orderBy: OrderBy.ASC,
   setOrderBy: (orderBy) => set({ orderBy }),
   setCurrentSong: async (song) => {
     const { shuffle, source, sourceId, orderBy } = get();
@@ -98,7 +98,6 @@ const UseControls = create<ControlsState>((set, get) => ({
     if (!song) return;
   
     const isAsc = orderBy === OrderBy.ASC;
-    const isDesc = orderBy === OrderBy.DESC;
   
     const isAtEnd = isAsc
       ? tempPlaylist.slice(newIndex).length <= 1
@@ -244,7 +243,7 @@ const UseControls = create<ControlsState>((set, get) => ({
     }
   },
   previousSong: async () => {
-    const { currentIndex, playlist, source, sourceId } = get();
+    const { currentIndex, playlist, source, sourceId, orderBy } = get();
 
     const newIndex = currentIndex - 1;
 
@@ -256,10 +255,14 @@ const UseControls = create<ControlsState>((set, get) => ({
         source,
         sourceId,
         startId: tempCurrentSong?.id,
-        reverse: Reverse.TRUE
+        reverse: orderBy === OrderBy.ASC ? Reverse.TRUE : Reverse.FALSE
       })
 
-      tempPlaylist = [...fetchedSongs, ...tempPlaylist]
+      if(orderBy === OrderBy.ASC) {
+        tempPlaylist = [...fetchedSongs, ...tempPlaylist]
+      } else {
+        tempPlaylist = [...fetchedSongs.reverse(), ...tempPlaylist]
+      }
 
       set({
         currentIndex: fetchedSongs.length,

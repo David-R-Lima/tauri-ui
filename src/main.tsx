@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <ReactQueryProvider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <App/>
-        <Toaster />
+        <Toaster position="top-right"/>
         <InitLastHeard />
         <Socket></Socket>
       </ThemeProvider>
