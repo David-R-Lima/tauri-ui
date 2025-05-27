@@ -17,7 +17,7 @@ const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: []
 
 export function DisplayLikedSongs() {
 
-    const { setSource, setCurrentSong, orderBy, setOrderBy } = UseControls()
+    const { setSource, setCurrentSong, orderBy } = UseControls()
 
     const [text, setText] = useState<string | undefined>(undefined)
     const [durationGte, setDurationGte] = useState<number | undefined>(undefined)
@@ -31,11 +31,10 @@ export function DisplayLikedSongs() {
       duration_gte: durationGte,
       duration_lte: durationLte,
       text,
-      order_by: orderBy,
+      order_by: order,
     })
 
     const applyFilters = () => {
-      setOrderBy(order)
       infiniteQuery.refetch()
     }
 
@@ -92,7 +91,7 @@ export function DisplayLikedSongs() {
                 <DialogContent>
                   <div className="flex flex-col space-x-2">
                     <h1>Order by: </h1>
-                    <Select value={orderBy} defaultValue={orderBy} onValueChange={(e) => {
+                    <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                       setOrder(e as OrderBy)
                     }}>
                       <SelectTrigger className="w-[180px]">
@@ -142,7 +141,7 @@ export function DisplayLikedSongs() {
                 }}>Remove filters</Button>
               </div>
           </div>
-          <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">
+          <div className="flex justify-between w-full h-[75%] xl:h-[80%]">
             <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
                 <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>

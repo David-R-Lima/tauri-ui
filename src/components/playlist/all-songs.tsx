@@ -16,7 +16,7 @@ import { Button } from "../ui/button"
 const allPlaylist: Playlist = { id: "all", name: "All Songs", playlist_songs: [] }
 
 export function DisplayAllSongs() {
-    const { setSource, setCurrentSong, orderBy, setOrderBy } = UseControls()
+    const { setSource, setCurrentSong, orderBy } = UseControls()
 
     const [text, setText] = useState<string | undefined>(undefined)
     const [durationGte, setDurationGte] = useState<number | undefined>(undefined)
@@ -27,14 +27,13 @@ export function DisplayAllSongs() {
     const observerRef = useRef<HTMLDivElement | null>(null)
 
     const infiniteQuery = UseAllSongs({
-      orderBy,
+      orderBy: order,
       text,
       duration_gte: durationGte,
       duration_lte: durationLte,
     })
 
     const applyFilters = () => {
-      setOrderBy(order)
       infiniteQuery.refetch()
     }
 
@@ -71,6 +70,7 @@ export function DisplayAllSongs() {
           <div className="min-w-full min-h-[85vh] bg-secondary rounded-lg animate-pulse"></div>
         )
     }
+    
 
     return (
         <div className="flex flex-col w-full h-full">
@@ -91,7 +91,7 @@ export function DisplayAllSongs() {
                   <DialogContent>
                     <div className="flex flex-col space-x-2">
                       <h1>Order by: </h1>
-                      <Select value={orderBy} defaultValue={orderBy} onValueChange={(e) => {
+                      <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                         setOrder(e as OrderBy)
                       }}>
                         <SelectTrigger className="w-[180px]">
@@ -141,7 +141,7 @@ export function DisplayAllSongs() {
                 }}>Remove filters</Button>
               </div>
             </div>
-            <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">
+            <div className="flex justify-between w-full h-[75%] xl:h-[80%]">
               <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
                   <div className="h-[50%] w-[80%]">
                       <AudioLines className="w-full h-full"/>
