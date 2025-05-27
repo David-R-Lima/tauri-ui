@@ -24,7 +24,7 @@ export function SearchComboBox() {
   const observerRef = useRef<HTMLDivElement | null>(null)
 
   const { data, fetchNextPage, refetch, hasNextPage } = useInfiniteQuery({
-    queryKey: ["search"],
+    queryKey: ["search", textFilter],
     queryFn: async ({pageParam}) => {
       const data = await GetSongs({
         text: textFilter,
@@ -49,7 +49,8 @@ export function SearchComboBox() {
         songs,
         meta
       }
-    }
+    },
+    enabled: !!textFilter
   })
 
   useEffect(() => {
@@ -92,17 +93,14 @@ export function SearchComboBox() {
         </DialogTrigger>
         <DialogContent className="flex flex-col min-h-[30vh] max-h-[40vh]">
           <DialogTitle>Search...</DialogTitle>
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput onValueChange={(e) => {
               setText(e)
             }} placeholder="Type a command or search..." />
             <CommandList>
-              {data?.songs.length === 0 && (
-                <CommandEmpty>No results found.</CommandEmpty>
-              )}
+            {data?.songs && data?.songs?.length > 0 && (
               <CommandGroup>
                 {data?.songs.map((s, i) => {
-
                   if(i === data.songs.length - 1) {
                     return (
                       <div ref={observerRef} key={i}>
@@ -118,8 +116,12 @@ export function SearchComboBox() {
                       setCurrentSong(s)
                     }}>{s.title}</CommandItem>
                   )
-                })}
-              </CommandGroup>
+                  })}
+                </CommandGroup>
+              )}
+              {data?.songs.length === 0 && (
+                <CommandEmpty>No results found.</CommandEmpty>
+              )}
             </CommandList>
           </Command>
         </DialogContent>

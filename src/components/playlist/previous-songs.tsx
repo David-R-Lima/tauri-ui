@@ -17,7 +17,7 @@ const previousPlaylist: Playlist = { id: "history", name: "previous Songs", play
 
 export function DisplayHistorySongs() {
 
-    const { setSource, setCurrentSong, orderBy, setOrderBy } = UseControls()
+    const { setSource, setCurrentSong, orderBy } = UseControls()
 
     const [text, setText] = useState<string | undefined>(undefined)
     const [order, setOrder] = useState<OrderBy>(orderBy)
@@ -27,11 +27,10 @@ export function DisplayHistorySongs() {
 
     const infiniteQuery = UseHistorySongs({
       text,
-      order_by: orderBy,
+      order_by: order,
     })
 
     const applyFilters = () => {
-      setOrderBy(order)
       infiniteQuery.refetch()
     }
 
@@ -88,7 +87,7 @@ export function DisplayHistorySongs() {
                 <DialogContent>
                   <div className="flex flex-col space-x-2">
                     <h1>Order by: </h1>
-                    <Select value={orderBy} defaultValue={orderBy} onValueChange={(e) => {
+                    <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                       setOrder(e as OrderBy)
                     }}>
                       <SelectTrigger className="w-[180px]">
@@ -117,7 +116,7 @@ export function DisplayHistorySongs() {
                 }}>Remove filters</Button>
               </div>
           </div>
-          <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">
+          <div className="flex justify-between w-full h-[75%] xl:h-[80%]">
             <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
                 <div className="h-[50%] w-[80%]">
                     <AudioLines className="w-full h-full"/>

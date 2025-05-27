@@ -17,7 +17,7 @@ interface Props {
 }
 export function DisplayPlaylist({ playlistId }: Props) {
 
-    const { setSource, setSourceId, setCurrentSong, orderBy, setOrderBy } = UseControls()
+    const { setSource, setSourceId, setCurrentSong, orderBy } = UseControls()
 
 
     const [text, setText] = useState<string | undefined>(undefined)
@@ -35,7 +35,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                 duration_gte: durationGte,
                 duration_lte: durationLte,
                 text,
-                order_by: orderBy
+                order_by: order
             })
         },
         getNextPageParam: ({ playlist_songs }) => {
@@ -55,7 +55,6 @@ export function DisplayPlaylist({ playlistId }: Props) {
     })
 
     const applyFilters = () => {
-        setOrderBy(order)
         refetch()
     }
 
@@ -115,7 +114,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                   <DialogContent>
                     <div className="flex flex-col space-x-2">
                       <h1>Order by: </h1>
-                      <Select value={orderBy} defaultValue={orderBy} onValueChange={(e) => {
+                      <Select value={order} defaultValue={orderBy} onValueChange={(e) => {
                         setOrder(e as OrderBy)
                       }}>
                         <SelectTrigger className="w-[180px]">
@@ -165,7 +164,7 @@ export function DisplayPlaylist({ playlistId }: Props) {
                 }}>Remove filters</Button>
               </div>
             </div>
-            <div className="flex justify-between w-full h-[75%] lg:h-[80%] xl:h-[85%]">
+            <div className="flex justify-between w-full h-[75%] xl:h-[80%]">
               <div className="hidden lg:flex flex-col items-center justify-center w-[30%] xl:w-[20%] h-full p-6 bg-primary rounded-bl-xl">
                 <div className="h-[50%] w-[80%]">
                     {data?.playlist.img_url ? (
