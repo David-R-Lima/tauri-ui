@@ -36,6 +36,6 @@ export default defineConfig(async () => ({
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ['**/src-tauri/**'],
     },
-    allowedHosts: ['yt-api.deividy.dev']
+    allowedHosts: ['yt-api.deividy.dev', 'server.barb-banjo.ts.net']
   },
 }))
