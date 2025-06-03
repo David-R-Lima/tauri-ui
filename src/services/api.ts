@@ -1,9 +1,13 @@
 import axios, { AxiosError } from 'axios'
 
 const baseURL = import.meta.env.VITE_API_URL
+const authorization = import.meta.env.VITE_API_AUTHORIZATION
 
 export const api = axios.create({
   baseURL: baseURL,
+  headers: {
+    Authorization: 'Bearer ' + authorization,
+  },
 })
 
 api.interceptors.response.use(
