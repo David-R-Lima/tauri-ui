@@ -14,6 +14,7 @@ import { HandleEvents } from "./handle-events"
 import { UpdateNowListening } from "@/services/now-listening"
 
 const baseUrl = import.meta.env.VITE_API_URL
+const token = import.meta.env.VITE_API_AUTHORIZATION
 
 export function Controls() {
     const [open, setOpen] = useState(false);
@@ -194,7 +195,7 @@ export function Controls() {
                 <audio
                 key={currentSong.id}
                 ref={audioRef}
-                src={baseUrl + currentSong.local_url}
+                src={baseUrl + currentSong.local_url + "?token=" + token}
                 preload="auto"
                 onEnded={() => {
                     if (repeat && currentSong) {
