@@ -3,8 +3,8 @@ import { IPaginationResponse } from '../pagination'
 import { History } from './types'
 import { OrderBy } from '../enums/order-by'
 
-interface getHistoryProps {
-  page: number
+export interface getHistoryProps {
+  page?: number
   limit?: number
   order_by?: OrderBy
   text?: string

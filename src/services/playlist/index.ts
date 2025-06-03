@@ -3,6 +3,7 @@ import { api } from '../api'
 import { CreatePlaylistType, Playlist } from './types'
 import { IPaginationResponse } from '../pagination'
 import { PlaylistSong } from '../playlist-songs/types'
+import { getSongsProps } from '../songs'
 
 export async function GetPlaylists(ctx: QueryFunctionContext) {
   const [, page, limit, pinned, order_by, text] = ctx.queryKey
@@ -23,13 +24,11 @@ export async function GetPlaylists(ctx: QueryFunctionContext) {
   return data
 }
 
-interface GetPlaylistParams {
+interface GetPlaylistParams extends getSongsProps {
   id?: string,
-  page?: number
 }
 
-export async function GetPlaylist({ id, page }: GetPlaylistParams) {
-
+export async function GetPlaylist({ id, page, duration_gte, duration_lte, order_by, text, liked }: GetPlaylistParams) {
   const { data } = await api.get<{
     playlist: Playlist,
     playlist_songs: {
@@ -39,6 +38,11 @@ export async function GetPlaylist({ id, page }: GetPlaylistParams) {
   }>('/playlist/' + id, {
     params: {
       page,
+      liked,
+      duration_gte,
+      duration_lte,
+      order_by,
+      text,
     },
   })
 

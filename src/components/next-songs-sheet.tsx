@@ -1,4 +1,4 @@
-import { AlignJustify, AudioLines, Disc2, Play } from "lucide-react";
+import { AlignJustify, Disc2, Pause, Play } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "./ui/sheet";
 import { Button } from "./ui/button";
 import UseControls from "@/store/song-control-store";
@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { DivButton } from "./ui/div-but-button";
 
 export function NextSongsSheet() {
-    const { currentSong, playlist, currentIndex, setCurrentSongFromSideBar } = UseControls()
+    const { currentSong, playlist, currentIndex, setCurrentSongFromSideBar, isPlaying, play, pause } = UseControls()
 
     const currentSongRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +42,19 @@ export function NextSongsSheet() {
                                         )}
                                         <p className="truncate max-w-[150px]">{song.title}</p> 
                                     </div>
-                                    <AudioLines className="size-12 text-primary"/>
+                                    {!isPlaying ? (
+                                        <Button  onClick={() => {
+                                            play()
+                                        }}>
+                                            <Play/>
+                                        </Button>
+                                    ) : (
+                                        <Button onClick={() => {
+                                            pause()
+                                        }}>
+                                            <Pause/>
+                                        </Button>
+                                    )}
                                 </div>
                             )
                         }

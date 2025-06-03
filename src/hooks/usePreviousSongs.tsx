@@ -1,7 +1,7 @@
-import { GetHistory } from "@/services/history";
+import { GetHistory, getHistoryProps } from "@/services/history";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-export function UseHistorySongs() {
+export function UseHistorySongs({ order_by, text }: getHistoryProps ) {
     const infiniteQuery = useInfiniteQuery({
         queryKey: [
             'previous-songs',
@@ -9,6 +9,8 @@ export function UseHistorySongs() {
         queryFn: ({ pageParam = 1 }) => {
           return GetHistory({
             page: Number(pageParam),
+            order_by,
+            text
           })
         },
         getNextPageParam: ({ meta }) => {

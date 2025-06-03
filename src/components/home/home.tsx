@@ -80,10 +80,10 @@ export function Home() {
                         <MoveRight />
                     </div>
                 </div>
-                <Carousel setApi={setQuickSelectApi} className="w-[90vw]">
+                <Carousel setApi={setQuickSelectApi}>
                     <CarouselContent className="">
                         {historyQuery.data && historyQuery.data.map((item, i) => (
-                            <CarouselItem key={i} className="basis-1/4">
+                            <CarouselItem key={i} className="basis-1/3 xl:basis-1/4 2xl:basis-1/5">
                                 <QuickSelectItem item={item}></QuickSelectItem>
                             </CarouselItem>
                         ))}
@@ -104,7 +104,7 @@ export function Home() {
                         <MoveRight />
                     </div>
                 </div>
-                <Carousel setApi={setApi} className="w-[90vw]">
+                <Carousel setApi={setApi}>
                     <CarouselContent className="">
                         {infiniteQuery.data && infiniteQuery.data.items && infiniteQuery.data.items.map((item, i) => (
                                 <CarouselItem key={i} className="basis-1/3">
