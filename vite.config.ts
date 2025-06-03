@@ -23,6 +23,7 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
     host: host || false,
+    
     hmr: host
       ? {
           protocol: 'ws',
@@ -30,9 +31,11 @@ export default defineConfig(async () => ({
           port: 1421,
         }
       : undefined,
+    
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ['**/src-tauri/**'],
     },
+    allowedHosts: ['num-sei.barb-banjo.ts.net']
   },
 }))
