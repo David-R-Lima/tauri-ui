@@ -64,17 +64,28 @@ export function Home() {
       }
     }, [infiniteQuery.hasNextPage, infiniteQuery.fetchNextPage])
 
+    const splicedArray = historyQuery.data
+    ? Array.from({ length: Math.ceil(historyQuery.data.length / 4) }, (_, index) =>
+        historyQuery.data.slice(index * 4, index * 4 + 4)
+        )
+    : []
+
+    const youtubeSplicedArray = infiniteQuery.data
+    ? Array.from({ length: Math.ceil(infiniteQuery.data.items.length / 4) }, (_, index) =>
+        infiniteQuery.data.items.slice(index * 4, index * 4 + 4)
+        ) : []
+
     return (
-        <div className="mx-h-[80vh] overflow-y-auto overflow-x-hidden p-4 space-y-4">
-            <div className="space-y-4">
+        <div className="flex flex-col w-screen mx-h-[80vh] overflow-y-auto overflow-x-hidden space-y-4 px-2 md:px-20 container-s">
+            <div className="space-y-4 bg-primary/5 p-4 rounded-lg">
                 <h1>Quick select</h1>
                 <div className="flex w-full justify-between">
-                    <div className="p-1 bg-primary rounded-full hover:cursor-pointer" onClick={() => {
+                    <div className="p-1 text-xl rounded-full hover:cursor-pointer" onClick={() => {
                             quickSelectApi?.scrollPrev(true)
                         }}>
                         <MoveLeft className="" />
                     </div>
-                    <div className="p-1 bg-primary rounded-full hover:cursor-pointer" onClick={() => {
+                    <div className="p-1 texl-xl rounded-full hover:cursor-pointer" onClick={() => {
                             quickSelectApi?.scrollNext(true)
                         }}>
                         <MoveRight />
@@ -82,36 +93,46 @@ export function Home() {
                 </div>
                 <Carousel setApi={setQuickSelectApi}>
                     <CarouselContent className="">
-                        {historyQuery.data && historyQuery.data.map((item, i) => (
-                            <CarouselItem key={i} className="basis-1/3 xl:basis-1/4 2xl:basis-1/5">
-                                <QuickSelectItem item={item}></QuickSelectItem>
+                        {splicedArray.map((items, i) => (
+                            <CarouselItem key={i} className="basis-1/1 lg:basis-1/3">
+                                <div className="flex flex-col space-y-2">
+                                    {items.map((item, j) => (
+                                        <QuickSelectItem item={item} key={j}></QuickSelectItem>
+                                    ))}
+                                </div>
                             </CarouselItem>
                         ))}
                     </CarouselContent>
                 </Carousel>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 bg-red-500/5 p-4 rounded-lg">
                 <h1>Youtube liked</h1>
                 <div className="flex w-full justify-between">
-                    <div className="p-1 bg-primary rounded-full hover:cursor-pointer" onClick={() => {
+                    <div className="p-1 text-xl rounded-full hover:cursor-pointer" onClick={() => {
                             api?.scrollPrev(true)
                         }}>
                         <MoveLeft className="" />
                     </div>
-                    <div className="p-1 bg-primary rounded-full hover:cursor-pointer" onClick={() => {
+                    <div className="p-1 text-xl rounded-full hover:cursor-pointer" onClick={() => {
                             api?.scrollNext(true)
                         }}>
                         <MoveRight />
                     </div>
                 </div>
                 <Carousel setApi={setApi}>
-                    <CarouselContent className="">
-                        {infiniteQuery.data && infiniteQuery.data.items && infiniteQuery.data.items.map((item, i) => (
-                                <CarouselItem key={i} className="basis-1/3">
-                                    <YoutubeItem item={item} key={i}></YoutubeItem>
-                                </CarouselItem>
-                            ))}
-                        <CarouselItem className="basis-1/3">
+                    <CarouselContent className="space-x-4">
+                        {youtubeSplicedArray.map((items, i) => (
+                            <CarouselItem key={i} className="basis-1/1 lg:basis-1/2">
+                                <div className="flex flex-col">
+                                    {items.map((item, j) => (
+                                        <YoutubeItem item={item} key={j}></YoutubeItem>
+                                    ))}
+                                </div>
+                            </CarouselItem>
+                        ))}
+                        <CarouselItem className="basis-1/3 hover:pointer" onClick={() => {
+                            infiniteQuery.fetchNextPage()
+                        }}>
                             <div ref={observerRef} className="h-full">
                                 <Card className="h-full">
                                     <CardContent className="flex items-center justify-center h-full">

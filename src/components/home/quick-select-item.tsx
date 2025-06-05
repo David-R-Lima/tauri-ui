@@ -1,5 +1,4 @@
-import { Card, CardContent } from "../ui/card"
-import { AudioLines, Play } from "lucide-react"
+import { EllipsisVertical } from "lucide-react"
 import { History } from "@/services/history/types"
 import UseControls from "@/store/song-control-store"
 
@@ -10,26 +9,22 @@ interface Props {
 export function QuickSelectItem({item}: Props) {
     const { currentSong, setCurrentSong, isPlaying } = UseControls()
     return (
-        <Card>
-            <CardContent className="flex flex-col items-center justify-between space-y-2">
-                <div className="flex flex-col items-center w-full space-y-2">
-                    {item.song?.img_url && (
-                        <img className="size-32" src={item.song?.img_url} alt="" />
-                    )}
-                    {item.song?.title && (
-                        <h1 className="truncate max-w-[90%]">{item.song?.title}</h1>
-                    )}
-                </div>
-                {currentSong && currentSong.id === item.song_id && isPlaying ? (
-                    <AudioLines size={32} className="animate-pulse text-primary" />
-                ) : (
-                    <Play size={32} className="hover:animate-pulse hover:text-primary hover:cursor-pointer" onClick={() => {
-                        if(item.song) {
-                            setCurrentSong(item.song)
-                        }
-                    }}></Play>
+        <div className="flex items-center space-y-4 hover:cursor-pointer">
+            <div className="flex flex-row space-x-2 items-center w-full" onClick={() => {
+                if(item.song) {
+                    setCurrentSong(item.song)
+                }
+            }}>
+                {item.song?.img_url && (
+                    <img className="size-12 rounded-lg overflow-hidden" src={item.song?.img_url} alt="" />
                 )}
-            </CardContent>
-        </Card>
+                {item.song?.title && (
+                    <h1 className={`truncate max-w-[90%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
+                )}
+            </div>
+            <div>
+                <EllipsisVertical />
+            </div>
+        </div>
     )
 }

@@ -20,23 +20,23 @@ export function PlaylistCarousel() {
     return (
         <div className="flex w-full h-full">
             <Tabs defaultValue="all" className="flex items-center w-full">
-                <TabsList className="flex items-center justify-center w-[95%] mb-6">
+                <TabsList className="flex items-center justify-center w-[80%] md:w-[85%] mb-4">
                     <Carousel   opts={{
                         align: "start",
                         loop: true,
                     }} className="w-full">
-                        <CarouselContent className="w-full">
-                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                        <CarouselContent className="flex w-full items-center">
+                            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
                                 <TabsTrigger value="all" className="font-extrabold hover:cursor-pointer" >All songs</TabsTrigger>
                             </CarouselItem>
-                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
                                 <TabsTrigger value="liked" className="font-extrabold hover:cursor-pointer">Liked</TabsTrigger>
                             </CarouselItem>
-                            <CarouselItem className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
                                 <TabsTrigger value="history" className="font-extrabold hover:cursor-pointer">Previous songs</TabsTrigger>
                             </CarouselItem>
                             {playlistQuery.data && playlistQuery.data.playlists?.map((playlist) => (
-                                <CarouselItem key={playlist.id} className="basis-1/5 lg:basis-1/6 xl:basis-1/8">
+                                <CarouselItem key={playlist.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
                                         <TabsTrigger value={playlist.id} className="font-extrabold hover:cursor-pointer">{playlist.name ?? "no name"}</TabsTrigger>
                                 </CarouselItem>
                             ))}
@@ -45,17 +45,17 @@ export function PlaylistCarousel() {
                         <CarouselNext />
                     </Carousel>
                 </TabsList>
-                <TabsContent value="all" className="w-full h-full">
+                <TabsContent value="all" className="w-full h-full px-4">
                     <DisplayAllSongs></DisplayAllSongs>
                 </TabsContent>
-                <TabsContent value="liked" className="w-full h-full">
+                <TabsContent value="liked" className="w-full h-full px-4">
                     <DisplayLikedSongs></DisplayLikedSongs>
                 </TabsContent>
-                <TabsContent value="history" className="w-full h-full">
+                <TabsContent value="history" className="w-full h-full px-4">
                     <DisplayHistorySongs></DisplayHistorySongs>
                 </TabsContent>
                 {playlistQuery.data && playlistQuery.data.playlists?.map((playlist) => (
-                    <TabsContent key={playlist.id} value={playlist.id} className="w-full h-full">
+                    <TabsContent key={playlist.id} value={playlist.id} className="w-full h-full px-4">
                         <DisplayPlaylist playlistId={playlist.id}></DisplayPlaylist>
                     </TabsContent>
                 ))}

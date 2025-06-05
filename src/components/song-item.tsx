@@ -1,6 +1,6 @@
 import { Song } from "@/services/songs/types";
 import UseControls from "@/store/song-control-store";
-import { AudioLines, Download, EllipsisVertical, Heart, Loader2, Minus, Play, Plus, Trash } from "lucide-react";
+import { Download, EllipsisVertical, Heart, Loader2, Minus, Plus, Trash } from "lucide-react";
 import { usePlaylists } from "@/hooks/usePlaylists";
 import { AddSong, DeleteSong, UpdateSong } from "@/services/songs";
 import { useMutation } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ interface Props {
 
 export function SongItem({ song, onClick, playlistId }: Props) {
 
-    const {currentSong, isPlaying, play, setCurrentTime, pause} = UseControls()
+    const {currentSong, isPlaying} = UseControls()
 
     const [alertOpen, setAlertOpen] = useState(false)
 
@@ -91,21 +91,10 @@ export function SongItem({ song, onClick, playlistId }: Props) {
             <div className="flex items-center space-x-4 hover:cursor-pointer" onClick={() => {
                 onClick()
             }}> 
-                {currentSong?.id === song.id && isPlaying && (
-                    <AudioLines className="animate-pulse text-primary" />
-                )}
-                {(currentSong?.id !== song.id || !isPlaying) && (
-                    <Play  onClick={() => {
-                        pause()
-                        setCurrentTime(0)
-                        play()
-                    }}/>
-                )}
-
                 {song.img_url && (
                     <img className="size-10" src={song.img_url} alt="" />
                 )}
-                <p className="truncate max-w-[100px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-full">{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
+                <p className={`truncate max-w-[100px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-full ${currentSong?.id === song.id && isPlaying ? "text-primary animate-pulse" : ""}`}>{(song.title ?? 'Untitled').replace(/\.mp3$/i, '')}</p>
 
                 {
                     song.duration && (

@@ -14,11 +14,11 @@ function App() {
   const { color } = useAppSettingsStore()
 
   return (
-      <main className={cn("relative h-screen w-screen flex flex-col font-[roboto] font-bold", color)}>
+      <main className={cn("relative h-screen w-screen flex flex-col font-[roboto] font-bold, ", color)}>
         <header>
           <Header state={state} setHeaderState={setState}></Header>
         </header>
-        <section className='flex flex-col flex-1 w-full h-[60vh] xl:h-[90vh] max-h-[90vh] overflow-hidden py-6 px-10' >
+        <section className='flex flex-col flex-1 w-full h-[60vh] xl:h-[90vh] max-h-[90vh] overflow-hidden py-6 ' >
           {state === HeaderState.HOME && (
             <Home></Home>
           )}
