@@ -49,6 +49,7 @@ export function Controls() {
         audio.volume = volume
 
         if (isPlaying) {
+            audio.load()
             audio.play().catch(console.error)
         } else {
             audio.pause()
@@ -67,9 +68,13 @@ export function Controls() {
         const audio = audioRef.current
         if (!audio) return
 
+        // Reset time when song changes
+        audio.currentTime = 0;
+        setCurrentTime(0);
+
         const updateTime = () => {
-            setCurrentTime(audio.currentTime)
-        }
+            setCurrentTime(audio.currentTime);
+        };
 
         audio.addEventListener('timeupdate', updateTime)
         return () => {
@@ -241,19 +246,18 @@ export function Controls() {
 
             {currentSong?.local_url && (
                 <audio
-                key={currentSong.id}
-                ref={audioRef}
-                src={baseUrl + currentSong.local_url + "?token=" + token}
-                preload="auto"
-                onEnded={() => {
-                    if (repeat && currentSong) {
-                    audioRef.current!.currentTime = 0
-                    audioRef.current!.play().catch(() => {})
-                    setCurrentTime(0)
-                    } else {
-                    handleEndSong()
-                    }
-                }}
+                    ref={audioRef}
+                    src={baseUrl + currentSong.local_url + "?token=" + token}
+                    preload="auto"
+                    onEnded={() => {
+                        if (repeat && currentSong) {
+                        audioRef.current!.currentTime = 0
+                        audioRef.current!.play().catch(() => {})
+                        setCurrentTime(0)
+                        } else {
+                        handleEndSong()
+                        }
+                    }}
                 />
             )}
 
