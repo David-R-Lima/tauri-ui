@@ -20,6 +20,7 @@ export default defineConfig(async () => ({
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#317EFB',
+        display_override: ["minimal-ui"],
         icons: [
           {
             src: '/pwa-192x192.png',
