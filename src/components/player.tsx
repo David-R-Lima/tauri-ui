@@ -99,24 +99,52 @@ export function Controls() {
     }, [currentSong])
 
     useEffect(() => {
-  if ('mediaSession' in navigator && currentSong) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: currentSong.title,
-      artist: currentSong.artist,
-      artwork: [
-            { src: currentSong?.img_url ?? "", sizes: '512x512', type: 'image/png' }
-        ]
-        });
+        if ('mediaSession' in navigator) {
+            if (currentSong) {
+            try {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                title: currentSong.title || '',
+                artist: currentSong.artist || '',
+                artwork: currentSong.img_url
+                    ? [
+                        {
+                        src: currentSong.img_url,
+                        sizes: '512x512',
+                        type: 'image/png',
+                        },
+                    ]
+                    : [],
+                });
+            } catch (error) {
+                console.warn('MediaSession metadata error:', error);
+            }
 
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
-        nextSong();
-        });
-
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
-        previousSong();
-        });
-    }
-    }, [currentSong]);
+            try {
+                navigator.mediaSession.setActionHandler('play', () => {
+                play();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                pause();
+                });
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                nextSong();
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', () => {
+                previousSong();
+                });
+            } catch (error) {
+                console.warn('MediaSession action handler error:', error);
+            }
+            } else {
+            // Clear metadata and handlers when no song is selected
+            navigator.mediaSession.metadata = null;
+            navigator.mediaSession.setActionHandler('play', null);
+            navigator.mediaSession.setActionHandler('pause', null);
+            navigator.mediaSession.setActionHandler('nexttrack', null);
+            navigator.mediaSession.setActionHandler('previoustrack', null);
+            }
+        }
+    }, [currentSong, play, pause, nextSong, previousSong]);
 
     return (
         <div className="flex flex-col w-full h-full overflow-hidden">
