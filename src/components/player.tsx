@@ -98,6 +98,26 @@ export function Controls() {
         }
     }, [currentSong])
 
+    useEffect(() => {
+  if ('mediaSession' in navigator && currentSong) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentSong.title,
+      artist: currentSong.artist,
+      artwork: [
+            { src: currentSong?.img_url ?? "", sizes: '512x512', type: 'image/png' }
+        ]
+        });
+
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+        nextSong();
+        });
+
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+        previousSong();
+        });
+    }
+    }, [currentSong]);
+
     return (
         <div className="flex flex-col w-full h-full overflow-hidden">
             <div className="z-5">
