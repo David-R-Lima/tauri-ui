@@ -131,32 +131,13 @@ export function Controls() {
                     nextSong();
                 });
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    if(currentTime > 5) {
-                        if (audioRef.current) {
-                            audioRef.current.currentTime = 0
-                            setCurrentTime(0)
-                        }
-                    } else {
-                        previousSong()
-                    }
+                    previousSong()
                 });
                 navigator.mediaSession.setActionHandler('seekbackward', ()=> {
-                    if(currentTime) {
-                        const newTime = Math.max(currentTime - 10, 0)
-                        if (audioRef.current) {
-                            audioRef.current.currentTime = newTime
-                            setCurrentTime(newTime)
-                        }
-                    }
+                    previousSong()
                 })
                 navigator.mediaSession.setActionHandler('seekforward', ()=> {
-                    if(currentTime && currentSong) {
-                        const newTime = Math.min(currentTime + 10, currentSong.duration || 0)
-                        if (audioRef.current) {
-                            audioRef.current.currentTime = newTime
-                            setCurrentTime(newTime)
-                        }
-                    }
+                    nextSong()
                 })
             } catch (error) {
                 console.warn('MediaSession action handler error:', error);
