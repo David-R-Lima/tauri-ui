@@ -49,7 +49,7 @@ export function Controls() {
         audio.volume = volume
 
         if (isPlaying) {
-            audio.load()
+            // audio.load()
             audio.play().catch(console.error)
         } else {
             audio.pause()
@@ -68,10 +68,6 @@ export function Controls() {
         const audio = audioRef.current
         if (!audio) return
 
-        // Reset time when song changes
-        audio.currentTime = 0;
-        setCurrentTime(0);
-
         const updateTime = () => {
             setCurrentTime(audio.currentTime);
         };
@@ -80,7 +76,7 @@ export function Controls() {
         return () => {
             audio.removeEventListener('timeupdate', updateTime)
         }
-    }, [currentSong])
+    }, [currentSong, currentTime])
 
     //add to history after 10 seconds
     useEffect(() => {
@@ -126,19 +122,26 @@ export function Controls() {
 
             try {
                 navigator.mediaSession.setActionHandler('play', () => {
-                play();
+                    play();
                 });
                 navigator.mediaSession.setActionHandler('pause', () => {
-                pause();
+                    pause();
                 });
                 navigator.mediaSession.setActionHandler('nexttrack', () => {
-                nextSong();
+                    nextSong();
                 });
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
-                previousSong();
+                    previousSong();
                 });
                 navigator.mediaSession.setActionHandler('seekbackward', ()=> {
-                    previousSong()
+                    if(currentTime > 5) {
+                        if (audioRef.current) {
+                            audioRef.current.currentTime = 0
+                            setCurrentTime(0)
+                        }
+                    } else {
+                        previousSong()
+                    }
                 })
                 navigator.mediaSession.setActionHandler('seekforward', ()=> {
                     nextSong()
@@ -147,18 +150,18 @@ export function Controls() {
                 console.warn('MediaSession action handler error:', error);
             }
             } else {
-            // Clear metadata and handlers when no song is selected
-            navigator.mediaSession.metadata = null;
-            navigator.mediaSession.setActionHandler('play', null);
-            navigator.mediaSession.setActionHandler('pause', null);
-            navigator.mediaSession.setActionHandler('nexttrack', null);
-            navigator.mediaSession.setActionHandler('previoustrack', null);
+                // Clear metadata and handlers when no song is selected
+                navigator.mediaSession.metadata = null;
+                navigator.mediaSession.setActionHandler('play', null);
+                navigator.mediaSession.setActionHandler('pause', null);
+                navigator.mediaSession.setActionHandler('nexttrack', null);
+                navigator.mediaSession.setActionHandler('previoustrack', null);
             }
         }
     }, [currentSong, play, pause, nextSong, previousSong]);
 
     return (
-        <div className="flex flex-col w-full h-full overflow-hidden">
+        <div className="flex flex-col w-[100vw] h-full overflow-hidden">
             <div className="z-5">
                 {currentSong && (
                     <div className="flex items-center w-full">
@@ -181,9 +184,16 @@ export function Controls() {
                 )}
         
                 <div className="p-4 bg-secondary-foreground text-white flex flex-row items-center justify-between gap-2">
-                    <div className="flex space-x-4">
+                    <div className="hidden md:flex space-x-4">
                         <Button className="text-accent-foreground" variant={"secondary"} onClick={() => {
-                            previousSong()
+                            if(currentTime > 5) {
+                                if (audioRef.current) {
+                                    audioRef.current.currentTime = 0
+                                    setCurrentTime(0)
+                                }
+                            } else {
+                                previousSong()
+                            }
                         }}>
                             <ArrowLeftFromLine />
                         </Button>
@@ -200,7 +210,9 @@ export function Controls() {
                             <ArrowRightToLine />
                         </Button>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4" onClick={() => {
+                        setOpen(true)
+                    }}>
                         {currentSong?.img_url ? (
                             <img
                                 className="size-16 object-cover text-primary rounded"
@@ -212,11 +224,20 @@ export function Controls() {
                         )}
 
                         <div className="text-lg text-primary font-semibold">
-                            <p className="truncate max-w-[250px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}</p>
+                            <p className="truncate max-w-[150px] md:max-w-[200px] lg:max-w-[400px] xl:max-w-[700px] 2xl:max-w-full">{currentSong ? `${currentSong.title?.replace(/\.mp3$/i, '')}` : 'No song selected'}</p>
                         </div>
                     </div>
+                    <div className="flex md:hidden">
+                        <Button
+                            onClick={isPlaying ? pause : play}
+                            variant={'secondary'}
+                            className="px-4 py-2 bg-primary"
+                        >
+                            {isPlaying ? <Pause/> : <Play/>}
+                        </Button>
+                    </div>
 
-                    <div className="flex gap-4">
+                    <div className="hidden md:flex gap-4">
                         <Popover>
                             <PopoverTrigger>
                                 <DivButton>

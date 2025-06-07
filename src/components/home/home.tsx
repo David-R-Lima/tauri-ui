@@ -95,7 +95,7 @@ export function Home() {
                     <CarouselContent className="">
                         {splicedArray.map((items, i) => (
                             <CarouselItem key={i} className="basis-1/1 lg:basis-1/3">
-                                <div className="flex flex-col space-y-2">
+                                <div className="flex flex-col space-y-4">
                                     {items.map((item, j) => (
                                         <QuickSelectItem item={item} key={j}></QuickSelectItem>
                                     ))}

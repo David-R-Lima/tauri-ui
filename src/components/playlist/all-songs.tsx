@@ -67,7 +67,7 @@ export function DisplayAllSongs() {
 
     if(infiniteQuery.isPending) {
         return (
-          <div className="min-w-full min-h-[85vh] bg-secondary rounded-lg animate-pulse"></div>
+          <div className="min-w-full min-h-[75vh] bg-secondary rounded-lg animate-pulse"></div>
         )
     }
     
@@ -151,7 +151,7 @@ export function DisplayAllSongs() {
                       <p className="font-extrabold italic">Songs: {infiniteQuery.data?.meta.totalItems}</p>
                   </div>
               </div>
-              <div className="w-full lg:w-[70%] xl:w-[80%] bg-secondary rounded-r-xl p-4 h-full overflow-y-scroll overflow-x-hidden">
+              <div className="w-full lg:w-[70%] xl:w-[80%] bg-secondary  p-4 h-full overflow-y-scroll overflow-x-hidden">
                   {infiniteQuery.data && infiniteQuery.data.songs.length && infiniteQuery.data.songs.length > 0 ? (
                       infiniteQuery.data.songs.map((data, i) => {
 

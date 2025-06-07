@@ -9,8 +9,8 @@ interface Props {
 export function QuickSelectItem({item}: Props) {
     const { currentSong, setCurrentSong, isPlaying } = UseControls()
     return (
-        <div className="flex items-center space-y-4 hover:cursor-pointer">
-            <div className="flex flex-row space-x-2 items-center w-full" onClick={() => {
+        <div className="flex items-center justify-between hover:cursor-pointer">
+            <div className="flex flex-row space-x-2 items-center w-[90%]" onClick={() => {
                 if(item.song) {
                     setCurrentSong(item.song)
                 }
@@ -19,7 +19,7 @@ export function QuickSelectItem({item}: Props) {
                     <img className="size-12 rounded-lg overflow-hidden" src={item.song?.img_url} alt="" />
                 )}
                 {item.song?.title && (
-                    <h1 className={`truncate max-w-[90%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
+                    <h1 className={`truncate max-w-[70%] ${currentSong === item.song && isPlaying ? "animate-pulse text-primary" : ""}`}>{item.song?.title}</h1>
                 )}
             </div>
             <div>

@@ -28,7 +28,8 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
         repeat, 
         shuffle,
         volume,
-        setVolume
+        setVolume,
+        setCurrentTime
      } = UseControls()
 
     return (
@@ -65,7 +66,7 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                             </Button>
                         </div>
                     </div>
-                    <div className="relative flex items-center w-full h-[20%]">
+                    <div className="hidden relative md:flex items-center w-full h-[20%]">
                         {currentSong && (
                             <div className="absolute w-full top-0">
                             <input
@@ -128,6 +129,66 @@ export function OpenCurrentSongSheet({ open, setOpen, audioRef }: Props) {
                             variant={shuffle ? 'default' : 'secondary'}
                             >
                             <Shuffle size={20} />
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="flex flex-col relative md:hidden items-center w-full h-[20%]">
+                        {currentSong && (
+                            <div className="absolute w-full top-0">
+                            <input
+                                type="range"
+                                min={0}
+                                max={currentSong?.duration || 0}
+                                step={0.1}
+                                value={currentTime}
+                                onChange={(e) => {
+                                const newTime = parseFloat(e.target.value)
+                                if (audioRef.current) {
+                                    audioRef.current.currentTime = newTime
+                                }
+                                }}
+                                className="w-full"
+                                aria-label="Progress bar"
+                            />
+                            </div>
+                        )}
+                        <div className="relative top-6 flex items-center space-x-4 mt-4">
+                            <Button
+                                onClick={setRepeat}
+                                className="text-accent-foreground"
+                                variant={repeat ? 'default' : 'secondary'}
+                            >
+                                <Repeat size={20} />
+                            </Button>
+                            <Button variant="secondary" className="text-accent-foreground" onClick={() => {
+                                if(currentTime > 5) {
+                                    if (audioRef.current) {
+                                        setCurrentTime(0)
+                                        audioRef.current.currentTime = 0
+                                    }
+                                } else {
+                                    previousSong()
+                                }
+                            }}>
+                                <ArrowLeftFromLine />
+                            </Button>
+                            <Button
+                                onClick={isPlaying ? pause : play}
+                                variant="secondary"
+                                className="px-4 py-2 bg-primary size-12"
+                            >
+                                {isPlaying ? <Pause className="size-6"/> : <Play className="size-6" />}
+                            </Button>
+                            <Button variant="secondary" className="text-accent-foreground" onClick={nextSong}>
+                                <ArrowRightToLine />
+                            </Button>
+                            
+                            <Button
+                                onClick={setShuffle}
+                                className="text-accent-foreground"
+                                variant={shuffle ? 'default' : 'secondary'}
+                                >
+                                <Shuffle size={20} />
                             </Button>
                         </div>
                     </div>
