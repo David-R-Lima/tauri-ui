@@ -137,7 +137,7 @@ export function Controls() {
                 //     previousSong()
                 // })
                 // navigator.mediaSession.setActionHandler('seekforward', ()=> {
-                //     nextSong()
+                //     nextSong() 
                 // })
             } catch (error) {
                 console.warn('MediaSession action handler error:', error);
