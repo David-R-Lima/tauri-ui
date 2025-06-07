@@ -133,12 +133,12 @@ export function Controls() {
                 navigator.mediaSession.setActionHandler('previoustrack', () => {
                     previousSong()
                 });
-                navigator.mediaSession.setActionHandler('seekbackward', ()=> {
-                    previousSong()
-                })
-                navigator.mediaSession.setActionHandler('seekforward', ()=> {
-                    nextSong()
-                })
+                // navigator.mediaSession.setActionHandler('seekbackward', ()=> {
+                //     previousSong()
+                // })
+                // navigator.mediaSession.setActionHandler('seekforward', ()=> {
+                //     nextSong()
+                // })
             } catch (error) {
                 console.warn('MediaSession action handler error:', error);
             }
